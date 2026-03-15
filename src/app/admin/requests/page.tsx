@@ -43,8 +43,33 @@ export default function AdminRequestsPage() {
     }
   }
 
-  if (loading) return <p className="text-gray-500">Loading requests…</p>;
-  if (error) return <p className="text-red-600">Error: {error}</p>;
+  if (loading) {
+    return (
+      <div role="status" aria-label="Loading requests">
+        <div className="animate-pulse space-y-4">
+          <div className="h-8 bg-gray-200 rounded w-1/3" />
+          <div className="h-24 bg-gray-200 rounded" />
+          <div className="h-24 bg-gray-200 rounded" />
+        </div>
+        <p className="sr-only">Loading requests…</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div role="alert" className="rounded-md bg-red-50 p-4">
+        <h3 className="text-sm font-medium text-red-800">Error loading requests</h3>
+        <p className="mt-2 text-sm text-red-700">{error}</p>
+        <button
+          onClick={() => window.location.reload()}
+          className="mt-3 text-sm font-medium text-red-600 hover:text-red-500"
+        >
+          Try again
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -55,7 +80,7 @@ export default function AdminRequestsPage() {
       ) : (
         <div className="space-y-4">
           {requests.map((req) => (
-            <div key={req.id} className="bg-white shadow rounded-lg p-6">
+            <div key={req.id} className="bg-white shadow rounded-lg p-6" role="article" aria-label={`Request from user ${req.userId.slice(0, 8)} for ${req.requestedRole} in ${req.scopeValue}`}>
               <div className="flex justify-between items-start">
                 <div>
                   <p className="text-sm font-mono text-gray-500">User: {req.userId.slice(0, 8)}…</p>
@@ -68,16 +93,18 @@ export default function AdminRequestsPage() {
                     Submitted {new Date(req.createdAt).toLocaleDateString()}
                   </p>
                 </div>
-                <div className="flex space-x-2">
+                <div className="flex space-x-2" role="group" aria-label="Review actions">
                   <button
                     onClick={() => handleReview(req.id, "approved")}
                     className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 text-sm font-medium"
+                    aria-label={`Approve request for ${req.requestedRole} in ${req.scopeValue}`}
                   >
                     Approve
                   </button>
                   <button
                     onClick={() => handleReview(req.id, "rejected")}
                     className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 text-sm font-medium"
+                    aria-label={`Reject request for ${req.requestedRole} in ${req.scopeValue}`}
                   >
                     Reject
                   </button>

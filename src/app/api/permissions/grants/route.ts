@@ -5,7 +5,19 @@ import { checkPermission, grantPermission, listGrantsForScope, revokePermission 
 import { getUserGrants } from "@/lib/permissions/cache";
 import { badRequest, conflict, forbidden, fromZodError, notFound, unauthorized } from "@/lib/errors";
 
-// --- POST /api/permissions/grants --- (T026)
+/**
+ * @api {post} /api/permissions/grants Create a permission grant
+ * @apiDescription Grants a role to a user at a specific scope. Requires manageGrants capability.
+ * @apiBody {string} userId - UUID of the user to grant the role to
+ * @apiBody {string} role - One of: global_admin, country_admin, city_admin, event_creator
+ * @apiBody {string} scopeType - One of: global, continent, country, city
+ * @apiBody {string|null} scopeValue - The scope value (e.g. "bristol") or null for global
+ * @apiSuccess {object} grant - The created PermissionGrant
+ * @apiError 400 Invalid request body
+ * @apiError 401 Not authenticated
+ * @apiError 403 Caller lacks manageGrants capability for target scope
+ * @apiError 409 Duplicate active grant already exists
+ */
 
 const createGrantSchema = z.object({
   userId: z.string().uuid(),
@@ -42,8 +54,17 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// --- GET /api/permissions/grants --- (T027)
-
+/**
+ * @api {get} /api/permissions/grants List permission grants
+ * @apiDescription Returns grants visible to the caller's admin scope.
+ * @apiQuery {string} [userId] - Filter by user UUID
+ * @apiQuery {string} [scopeType] - Filter by scope type
+ * @apiQuery {string} [scopeValue] - Filter by scope value
+ * @apiQuery {boolean} [includeRevoked=false] - Include revoked grants
+ * @apiSuccess {array} grants - Array of PermissionGrant objects
+ * @apiSuccess {number} total - Total count of returned grants
+ * @apiError 401 Not authenticated
+ */
 export async function GET(req: NextRequest) {
   const session = await getServerSession();
   if (!session) return unauthorized();
@@ -63,7 +84,17 @@ export async function GET(req: NextRequest) {
   return NextResponse.json({ grants, total: grants.length });
 }
 
-// --- DELETE /api/permissions/grants --- (T028)
+/**
+ * @api {delete} /api/permissions/grants Revoke a permission grant
+ * @apiDescription Soft-deletes a grant by setting revoked_at. Protects last global admin.
+ * @apiBody {string} grantId - UUID of the grant to revoke
+ * @apiSuccess {object} grant - The revoked PermissionGrant (with revoked_at set)
+ * @apiError 400 Invalid request body
+ * @apiError 401 Not authenticated
+ * @apiError 403 Caller lacks admin role
+ * @apiError 404 Grant not found
+ * @apiError 409 Grant already revoked, or last global admin protection
+ */
 
 const revokeGrantSchema = z.object({
   grantId: z.string().uuid(),
