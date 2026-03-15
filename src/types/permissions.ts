@@ -34,7 +34,9 @@ export type PermissionAction =
   | "viewAdminPanel"
   | "rsvp"
   | "post"
-  | "follow";
+  | "follow"
+  | "moderateThread"
+  | "moderateReports";
 
 export interface CheckPermissionRequest {
   action: PermissionAction;

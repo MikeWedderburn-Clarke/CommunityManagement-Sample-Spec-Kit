@@ -10,18 +10,21 @@ const ROLE_CAPABILITIES: Record<Role, Set<PermissionAction>> = {
     "createVenue", "editVenue",
     "manageGrants", "approveRequests", "viewAdminPanel",
     "rsvp", "post", "follow",
+    "moderateThread", "moderateReports",
   ]),
   country_admin: new Set([
     "createEvent", "editEvent", "deleteEvent",
     "createVenue", "editVenue",
     "manageGrants", "approveRequests", "viewAdminPanel",
     "rsvp", "post", "follow",
+    "moderateThread", "moderateReports",
   ]),
   city_admin: new Set([
     "createEvent", "editEvent", "deleteEvent",
     "createVenue", "editVenue",
     "manageGrants", "approveRequests", "viewAdminPanel",
     "rsvp", "post", "follow",
+    "moderateThread", "moderateReports",
   ]),
   event_creator: new Set([
     "createEvent", "editEvent",
