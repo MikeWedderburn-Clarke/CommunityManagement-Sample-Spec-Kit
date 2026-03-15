@@ -1,6 +1,6 @@
 param(
-    [string]$Repo = "MikeWedderburn-Clarke/CommunityManagement-Sample-Spec-Kit",
-    [int]$ProjectNumber = 3,
+    [string]$Repo = "microsoft/CommunityManagement-Sample-Spec-Kit",
+    [int]$ProjectNumber = 5,
     [string]$Owner = "MikeWedderburn-Clarke",
     [int]$BatchSize = 500
 )
@@ -69,7 +69,7 @@ foreach ($issue in $issues) {
     if ($specValue -and $specField) {
         $optionId = ($specField.options | Where-Object { $_.name -eq $specValue }).id
         if ($optionId) {
-            gh project item-edit --project-id "PVT_kwHOAFE7b84BR1Fz" --id $itemId --field-id $specField.id --single-select-option-id $optionId 2>&1 | Out-Null
+            gh project item-edit --project-id "PVT_kwHOAFE7b84BR1TO" --id $itemId --field-id $specField.id --single-select-option-id $optionId 2>&1 | Out-Null
         }
     }
     
@@ -77,7 +77,7 @@ foreach ($issue in $issues) {
     if ($prioValue -and $priorityField) {
         $optionId = ($priorityField.options | Where-Object { $_.name -eq $prioValue }).id
         if ($optionId) {
-            gh project item-edit --project-id "PVT_kwHOAFE7b84BR1Fz" --id $itemId --field-id $priorityField.id --single-select-option-id $optionId 2>&1 | Out-Null
+            gh project item-edit --project-id "PVT_kwHOAFE7b84BR1TO" --id $itemId --field-id $priorityField.id --single-select-option-id $optionId 2>&1 | Out-Null
         }
     }
     
@@ -85,7 +85,7 @@ foreach ($issue in $issues) {
     if ($phaseValue -and $phaseField) {
         $optionId = ($phaseField.options | Where-Object { $_.name -eq $phaseValue }).id
         if ($optionId) {
-            gh project item-edit --project-id "PVT_kwHOAFE7b84BR1Fz" --id $itemId --field-id $phaseField.id --single-select-option-id $optionId 2>&1 | Out-Null
+            gh project item-edit --project-id "PVT_kwHOAFE7b84BR1TO" --id $itemId --field-id $phaseField.id --single-select-option-id $optionId 2>&1 | Out-Null
         }
     }
     
