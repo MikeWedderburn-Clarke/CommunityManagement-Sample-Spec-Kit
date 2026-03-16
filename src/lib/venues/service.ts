@@ -1,4 +1,5 @@
 import { db } from "@/lib/db/client";
+import { escapeIlike } from "@/lib/db/utils";
 import type { Venue, CreateVenueRequest, UpdateVenueRequest } from "@/types/venues";
 
 interface VenueRow {
@@ -56,7 +57,7 @@ export async function listVenues(filters?: {
   }
   if (filters?.q) {
     conditions.push(`(v.name ILIKE $${idx} OR v.address ILIKE $${idx})`);
-    params.push(`%${filters.q}%`);
+    params.push(`%${escapeIlike(filters.q)}%`);
     idx++;
   }
 

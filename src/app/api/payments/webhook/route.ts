@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { updateOnboardingStatus } from "@/lib/payments/stripe-connect";
+import { STRIPE_API_VERSION } from "@/lib/payments/constants";
 
 // --- POST /api/payments/webhook --- (T058)
 
@@ -12,7 +13,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Missing signature" }, { status: 400 });
   }
 
-  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2024-12-18.acacia" });
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: STRIPE_API_VERSION });
 
   let event: Stripe.Event;
   try {

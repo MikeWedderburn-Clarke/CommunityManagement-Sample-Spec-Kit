@@ -1,14 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "@/lib/auth/session";
 import { revokeConcession } from "@/lib/concessions/service";
+import { unauthorized } from "@/lib/errors";
 
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ userId: string }> },
 ) {
-  const adminId = request.headers.get("x-user-id");
-  if (!adminId) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const session = await getServerSession();
+  if (!session) return unauthorized();
+  const adminId = session.userId;
 
   const { userId } = await params;
   const result = await revokeConcession(userId, adminId);

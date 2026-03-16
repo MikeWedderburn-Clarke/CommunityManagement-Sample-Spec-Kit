@@ -1,4 +1,5 @@
 import { db } from "@/lib/db/client";
+import { escapeIlike } from "@/lib/db/utils";
 import type {
   EventSummary,
   EventDetail,
@@ -142,7 +143,7 @@ export async function listEvents(query: ListEventsQuery): Promise<ListEventsResp
   }
   if (query.q) {
     conditions.push(`(e.title ILIKE $${idx} OR e.description ILIKE $${idx} OR v.name ILIKE $${idx})`);
-    params.push(`%${query.q}%`);
+    params.push(`%${escapeIlike(query.q)}%`);
     idx++;
   }
 

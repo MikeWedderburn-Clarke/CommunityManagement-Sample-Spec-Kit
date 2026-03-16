@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "@/lib/auth/session";
 import { getCertification, updateCertification, deleteCertification } from "@/lib/teachers/certifications";
 import { updateCertificationSchema } from "@/lib/validation/teacher-schemas";
+import { unauthorized } from "@/lib/errors";
 
 export async function GET(
   _request: NextRequest,
@@ -18,10 +20,8 @@ export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string; certId: string }> },
 ) {
-  const userId = request.headers.get("x-user-id");
-  if (!userId) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const session = await getServerSession();
+  if (!session) return unauthorized();
 
   const { certId } = await params;
   const body = await request.json();
@@ -41,10 +41,8 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string; certId: string }> },
 ) {
-  const userId = request.headers.get("x-user-id");
-  if (!userId) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const session = await getServerSession();
+  if (!session) return unauthorized();
 
   const { certId } = await params;
   const deleted = await deleteCertification(certId);

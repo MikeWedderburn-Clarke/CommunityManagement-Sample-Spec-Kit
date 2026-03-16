@@ -1,4 +1,5 @@
 import { db } from "@/lib/db/client";
+import { escapeIlike } from "@/lib/db/utils";
 import type {
   TeacherProfile,
   TeacherProfileDetail,
@@ -125,7 +126,7 @@ export async function searchTeachers(options: {
 
   if (q) {
     conditions.push(`(tp.bio ILIKE $${idx} OR u.name ILIKE $${idx})`);
-    params.push(`%${q}%`);
+    params.push(`%${escapeIlike(q)}%`);
     idx++;
   }
   if (specialty) {
@@ -140,9 +141,9 @@ export async function searchTeachers(options: {
   }
   if (city) {
     conditions.push(`EXISTS (
-      SELECT 1 FROM profiles p
-      JOIN cities c ON c.id = p.home_city_id
-      WHERE p.user_id = tp.user_id AND c.slug = $${idx}
+      SELECT 1 FROM user_profiles up2
+      JOIN cities c ON c.id = up2.home_city_id
+      WHERE up2.user_id = tp.user_id AND c.slug = $${idx}
     )`);
     params.push(city);
     idx++;

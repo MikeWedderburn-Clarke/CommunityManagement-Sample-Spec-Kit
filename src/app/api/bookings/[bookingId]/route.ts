@@ -1,14 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "@/lib/auth/session";
 import { getBooking, cancelBooking, completeBookingPayment } from "@/lib/bookings/service";
+import { unauthorized } from "@/lib/errors";
 
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ bookingId: string }> },
 ) {
-  const userId = request.headers.get("x-user-id");
-  if (!userId) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const session = await getServerSession();
+  if (!session) return unauthorized();
+  const userId = session.userId;
 
   const { bookingId } = await params;
   const booking = await getBooking(bookingId);
@@ -26,10 +27,9 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ bookingId: string }> },
 ) {
-  const userId = request.headers.get("x-user-id");
-  if (!userId) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const session = await getServerSession();
+  if (!session) return unauthorized();
+  const userId = session.userId;
 
   const { bookingId } = await params;
   const booking = await getBooking(bookingId);
