@@ -15,6 +15,7 @@
     "db:seed:admin": "tsx src/db/seeds/admin.ts"
   },
   "dependencies": {
+    "@azure/storage-blob": "^12.31.0",
     "@types/node": "^25.5.0",
     "@types/pg": "^8.18.0",
     "@types/react": "^19.2.14",
@@ -26,6 +27,7 @@
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "rrule": "^2.8.1",
+    "sharp": "^0.34.5",
     "stripe": "^20.4.1",
     "typescript": "^5.9.3",
     "zod": "^4.3.6"
