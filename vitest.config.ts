@@ -11,6 +11,7 @@ export default defineConfig({
     include: ["tests/**/*.test.ts"],
     setupFiles: [],
     testTimeout: 30000,
+    hookTimeout: 30000,
   },
   resolve: {
     alias: {

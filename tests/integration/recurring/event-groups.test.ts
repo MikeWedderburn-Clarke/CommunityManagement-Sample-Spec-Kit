@@ -251,7 +251,7 @@ describe("Event Groups & Ticket Types", () => {
       expect(avail).not.toBeNull();
       expect(avail!.capacity).toBe(10);
       expect(avail!.sold).toBe(0);
-      expect(avail!.remaining).toBe(10);
+      expect(avail!.available).toBe(10);
     });
 
     it("should resolve covers_all_events", async () => {
