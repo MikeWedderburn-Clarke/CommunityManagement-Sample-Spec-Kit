@@ -18,19 +18,22 @@ export interface Occurrence {
   date: string;           // ISO date (YYYY-MM-DD)
   startDatetime: string;  // ISO datetime with occurrence date applied
   endDatetime: string;
+  title?: string;
+  capacity?: number;
   isCancelled: boolean;
   isModified: boolean;
+  rsvpCount?: number;
   modifiedFields?: Record<string, unknown>;
 }
 
 export interface OccurrenceOverride {
   id: string;
-  eventId: string;
-  occurrenceDate: string;
-  overrideType: "cancelled" | "modified";
-  modifiedFields: Record<string, unknown>;
-  createdBy: string;
-  createdAt: string;
+  event_id: string;
+  occurrence_date: string;
+  override_type: "cancelled" | "modified";
+  modified_fields: Record<string, unknown>;
+  created_by: string;
+  created_at: string;
 }
 
 export type OccurrenceModifiableFields = {
@@ -52,33 +55,33 @@ export interface EventGroup {
   name: string;
   type: EventGroupType;
   description: string | null;
-  startDate: string;
-  endDate: string;
+  start_date: string;
+  end_date: string;
   currency: string;
-  posterImageUrl: string | null;
-  createdBy: string;
-  createdAt: string;
-  updatedAt: string;
+  poster_image_url: string | null;
+  created_by: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface EventGroupMember {
   id: string;
-  groupId: string;
-  eventId: string;
-  sortOrder: number;
+  group_id: string;
+  event_id: string;
+  sort_order: number;
 }
 
 export interface TicketType {
   id: string;
-  groupId: string;
+  group_id: string;
   name: string;
   description: string | null;
   cost: number;
-  concessionCost: number | null;
+  concession_cost: number | null;
   capacity: number;
-  coversAllEvents: boolean;
-  coveredEventIds: string[];
-  createdAt: string;
+  covers_all_events: boolean;
+  covered_event_ids: string[];
+  created_at: string;
 }
 
 export interface TicketTypeAvailability extends TicketType {
@@ -92,25 +95,25 @@ export type PricingTier = "standard" | "concession";
 
 export interface Booking {
   id: string;
-  ticketTypeId: string;
-  userId: string;
-  pricingTier: PricingTier;
-  amountPaid: number;
+  ticket_type_id: string;
+  user_id: string;
+  pricing_tier: PricingTier;
+  amount_paid: number;
   currency: string;
-  creditsApplied: number;
-  paymentStatus: BookingStatus;
-  stripeChargeId: string | null;
-  cancelledAt: string | null;
-  cancellationType: string | null;
-  bookedAt: string;
+  credits_applied: number;
+  payment_status: BookingStatus;
+  stripe_charge_id: string | null;
+  cancelled_at: string | null;
+  cancellation_type: string | null;
+  booked_at: string;
 }
 
 export interface BookingDetail extends Booking {
-  ticketTypeName: string;
-  groupId: string;
-  groupName: string;
-  coveredEventIds: string[];
-  cancellationEligible: boolean;
+  ticket_type_name: string;
+  group_id: string;
+  group_name: string;
+  covered_event_ids: string[];
+  cancellation_eligible: boolean;
 }
 
 // --- Concessions ---
@@ -118,16 +121,16 @@ export type ConcessionStatusValue = "pending" | "approved" | "rejected" | "revok
 
 export interface ConcessionStatus {
   id: string;
-  userId: string;
+  user_id: string;
   status: ConcessionStatusValue;
   evidence: string | null;
-  approvedBy: string | null;
-  approvedAt: string | null;
-  rejectedBy: string | null;
-  rejectedAt: string | null;
-  revokedBy: string | null;
-  revokedAt: string | null;
-  createdAt: string;
+  approved_by: string | null;
+  approved_at: string | null;
+  rejected_by: string | null;
+  rejected_at: string | null;
+  revoked_by: string | null;
+  revoked_at: string | null;
+  created_at: string;
 }
 
 // --- API Request/Response types ---
@@ -137,10 +140,14 @@ export interface CreateOccurrenceOverrideRequest {
 }
 
 export interface UpdateOccurrenceOverrideRequest {
-  modifiedFields: OccurrenceModifiableFields;
+  overrideType?: "cancelled" | "modified";
+  modifiedFields?: OccurrenceModifiableFields;
 }
 
 export interface SeriesEditRequest {
+  scope: "all" | "this" | "thisAndFuture";
+  occurrenceDate?: string;
+  changes: Record<string, unknown>;
   title?: string;
   description?: string;
   capacity?: number;
@@ -163,9 +170,13 @@ export interface CreateEventGroupRequest {
 
 export interface UpdateEventGroupRequest {
   name?: string;
+  type?: EventGroupType;
   description?: string;
   startDate?: string;
   endDate?: string;
+  currency?: string;
+  posterImageUrl?: string;
+  eventIds?: string[];
   addEventIds?: string[];
   removeEventIds?: string[];
 }
@@ -178,6 +189,7 @@ export interface CreateTicketTypeRequest {
   capacity: number;
   coversAllEvents: boolean;
   coveredEventIds?: string[];
+  eventIds?: string[];
 }
 
 export interface UpdateTicketTypeRequest {
@@ -186,6 +198,8 @@ export interface UpdateTicketTypeRequest {
   cost?: number;
   concessionCost?: number;
   capacity?: number;
+  coversAllEvents?: boolean;
+  eventIds?: string[];
 }
 
 export interface BookTicketRequest {
