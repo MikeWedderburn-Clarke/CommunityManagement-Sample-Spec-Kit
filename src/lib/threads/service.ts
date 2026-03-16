@@ -1,5 +1,4 @@
 import { db } from "@/lib/db/client";
-import { isBlocked } from "@/lib/safety/blocks";
 import { getMutedUserIds } from "@/lib/safety/mutes";
 import { getThreadAccess } from "@/lib/threads/access";
 import type {
@@ -109,18 +108,19 @@ export async function listMessages(
   const hasMore = result.rows.length > limit;
   const rows = hasMore ? result.rows.slice(0, limit) : result.rows;
 
+  // Batch-load blocked user IDs for the viewer (fixes N+1)
+  const blockedSet = viewerId ? await getBlockedUserIds(viewerId) : new Set<string>();
+
+  // Batch-load reaction summaries for all message IDs (fixes N+1)
+  const messageIds = rows.map((r) => r.id);
+  const reactionsMap = await getReactionSummariesBatch(messageIds, viewerId);
+
   const messages: Message[] = [];
   for (const row of rows) {
-    // Filter out blocked users' messages
-    if (viewerId && row.author_id !== viewerId) {
-      const blocked = await isBlocked(viewerId, row.author_id);
-      if (blocked) continue;
-    }
-
-    // Filter out muted users' messages
+    if (viewerId && row.author_id !== viewerId && blockedSet.has(row.author_id)) continue;
     if (mutedIds.includes(row.author_id)) continue;
 
-    const reactions = await getReactionSummary(row.id, viewerId);
+    const reactions = reactionsMap.get(row.id) ?? [];
 
     const editHistory = Array.isArray(row.edit_history)
       ? (row.edit_history as EditHistoryEntry[])
@@ -348,6 +348,54 @@ export async function toggleReaction(
     action: existing.rows.length > 0 ? "removed" : "added",
     count: parseInt(countResult.rows[0].cnt, 10),
   };
+}
+
+/** Batch-load all user IDs that have any block relationship with `userId`. */
+async function getBlockedUserIds(userId: string): Promise<Set<string>> {
+  const result = await db().query<{ other_id: string }>(
+    `SELECT CASE WHEN blocker_id = $1 THEN blocked_id ELSE blocker_id END AS other_id
+     FROM blocks
+     WHERE blocker_id = $1 OR blocked_id = $1`,
+    [userId],
+  );
+  return new Set(result.rows.map((r) => r.other_id));
+}
+
+/** Batch-load reaction summaries for multiple messages in a single query. */
+async function getReactionSummariesBatch(
+  messageIds: string[],
+  viewerId: string | null,
+): Promise<Map<string, ReactionSummary[]>> {
+  const map = new Map<string, ReactionSummary[]>();
+  if (messageIds.length === 0) return map;
+
+  const result = await db().query<{
+    message_id: string;
+    emoji: string;
+    cnt: string;
+    user_reacted: boolean;
+  }>(
+    `SELECT
+       r.message_id,
+       r.emoji,
+       COUNT(*) as cnt,
+       COALESCE(bool_or(r.user_id = $2), false) as user_reacted
+     FROM reactions r
+     WHERE r.message_id = ANY($1)
+     GROUP BY r.message_id, r.emoji`,
+    [messageIds, viewerId],
+  );
+
+  for (const r of result.rows) {
+    const arr = map.get(r.message_id) ?? [];
+    arr.push({
+      emoji: r.emoji as ReactionEmoji,
+      count: parseInt(r.cnt, 10),
+      reacted: r.user_reacted,
+    });
+    map.set(r.message_id, arr);
+  }
+  return map;
 }
 
 async function getReactionSummary(

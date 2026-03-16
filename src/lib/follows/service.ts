@@ -1,6 +1,5 @@
 import { db } from "@/lib/db/client";
 import { isBlocked } from "@/lib/safety/blocks";
-import { getRelationship } from "@/lib/follows/relationship";
 import type { FollowEntry, Relationship } from "@/types/community";
 
 export async function follow(
@@ -80,17 +79,16 @@ export async function getFollowers(
     [userId, pageSize, offset],
   );
 
-  const entries: FollowEntry[] = [];
-  for (const r of result.rows) {
-    const relationship = await getRelationship(viewerId, r.follower_id);
-    entries.push({
-      userId: r.follower_id,
-      displayName: r.display_name,
-      avatarUrl: r.avatar_url,
-      relationship,
-      followedAt: r.created_at,
-    });
-  }
+  const userIds = result.rows.map((r) => r.follower_id);
+  const relationships = await getRelationshipsBatch(viewerId, userIds);
+
+  const entries: FollowEntry[] = result.rows.map((r) => ({
+    userId: r.follower_id,
+    displayName: r.display_name,
+    avatarUrl: r.avatar_url,
+    relationship: relationships.get(r.follower_id) ?? "none",
+    followedAt: r.created_at,
+  }));
 
   return { entries, total };
 }
@@ -123,17 +121,16 @@ export async function getFollowing(
     [userId, pageSize, offset],
   );
 
-  const entries: FollowEntry[] = [];
-  for (const r of result.rows) {
-    const relationship = await getRelationship(viewerId, r.followee_id);
-    entries.push({
-      userId: r.followee_id,
-      displayName: r.display_name,
-      avatarUrl: r.avatar_url,
-      relationship,
-      followedAt: r.created_at,
-    });
-  }
+  const userIds = result.rows.map((r) => r.followee_id);
+  const relationships = await getRelationshipsBatch(viewerId, userIds);
+
+  const entries: FollowEntry[] = result.rows.map((r) => ({
+    userId: r.followee_id,
+    displayName: r.display_name,
+    avatarUrl: r.avatar_url,
+    relationship: relationships.get(r.followee_id) ?? "none",
+    followedAt: r.created_at,
+  }));
 
   return { entries, total };
 }
@@ -178,4 +175,38 @@ export async function getFriends(
     })),
     total,
   };
+}
+
+/** Batch-load relationships between viewerId and a list of user IDs in a single query. */
+async function getRelationshipsBatch(
+  viewerId: string | null,
+  userIds: string[],
+): Promise<Map<string, Relationship>> {
+  const map = new Map<string, Relationship>();
+  if (!viewerId || userIds.length === 0) return map;
+
+  const result = await db().query<{ follower_id: string; followee_id: string }>(
+    `SELECT follower_id, followee_id FROM follows
+     WHERE (follower_id = $1 AND followee_id = ANY($2))
+        OR (followee_id = $1 AND follower_id = ANY($2))`,
+    [viewerId, userIds],
+  );
+
+  for (const uid of userIds) {
+    if (uid === viewerId) {
+      map.set(uid, "self");
+      continue;
+    }
+    const viewerFollows = result.rows.some(
+      (r) => r.follower_id === viewerId && r.followee_id === uid,
+    );
+    const ownerFollows = result.rows.some(
+      (r) => r.follower_id === uid && r.followee_id === viewerId,
+    );
+    if (viewerFollows && ownerFollows) map.set(uid, "friend");
+    else if (viewerFollows) map.set(uid, "following");
+    else if (ownerFollows) map.set(uid, "follower");
+    else map.set(uid, "none");
+  }
+  return map;
 }

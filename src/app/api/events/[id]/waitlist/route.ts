@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "@/lib/auth/session";
 import { joinWaitlist, getEventWaitlist, leaveWaitlist } from "@/lib/waitlist/service";
 import { joinWaitlistSchema } from "@/lib/validation/schemas";
+import { unauthorized } from "@/lib/errors";
 
 export async function GET(
   _request: NextRequest,
@@ -15,10 +17,9 @@ export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  const userId = request.headers.get("x-user-id");
-  if (!userId) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const session = await getServerSession();
+  if (!session) return unauthorized();
+  const userId = session.userId;
 
   const { id: eventId } = await params;
   const body = await request.json();
@@ -40,10 +41,9 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  const userId = request.headers.get("x-user-id");
-  if (!userId) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const session = await getServerSession();
+  if (!session) return unauthorized();
+  const userId = session.userId;
 
   const { id: eventId } = await params;
   const removed = await leaveWaitlist(eventId, userId);

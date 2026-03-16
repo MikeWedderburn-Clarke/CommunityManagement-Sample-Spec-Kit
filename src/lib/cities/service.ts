@@ -1,4 +1,5 @@
 import { db } from "@/lib/db/client";
+import { escapeIlike } from "@/lib/db/utils";
 import type { City, NearestCityResponse } from "@/types/cities";
 
 interface CityRow {
@@ -42,7 +43,7 @@ export async function listCities(filters?: {
   }
   if (filters?.q) {
     conditions.push(`c.name ILIKE $${paramIdx++}`);
-    params.push(`%${filters.q}%`);
+    params.push(`%${escapeIlike(filters.q)}%`);
   }
 
   const where = conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";

@@ -1,34 +1,24 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
+import { requireAuth } from "@/lib/auth/middleware";
 import { createBooking, listUserBookings } from "@/lib/bookings/service";
 import { bookTicketSchema } from "@/lib/validation/recurring-schemas";
+import { fromZodError, badRequest } from "@/lib/errors";
 
-export async function GET(request: NextRequest) {
-  const userId = request.headers.get("x-user-id");
-  if (!userId) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
+export const GET = requireAuth(async (_req, { userId }) => {
   const bookings = await listUserBookings(userId);
   return NextResponse.json(bookings);
-}
+});
 
-export async function POST(request: NextRequest) {
-  const userId = request.headers.get("x-user-id");
-  if (!userId) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  const body = await request.json();
+export const POST = requireAuth(async (req, { userId }) => {
+  const body = await req.json();
   const parsed = bookTicketSchema.safeParse(body);
-  if (!parsed.success) {
-    return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
-  }
+  if (!parsed.success) return fromZodError(parsed.error);
 
   try {
     const booking = await createBooking(userId, parsed.data);
     return NextResponse.json(booking, { status: 201 });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Booking failed";
-    return NextResponse.json({ error: message }, { status: 400 });
+    return badRequest(message);
   }
-}
+});

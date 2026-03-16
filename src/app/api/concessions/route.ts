@@ -1,18 +1,15 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
+import { requireAuth } from "@/lib/auth/middleware";
 import {
   applyConcession,
   getConcessionStatus,
   listPendingConcessions,
 } from "@/lib/concessions/service";
 import { concessionApplicationSchema } from "@/lib/validation/recurring-schemas";
+import { fromZodError, badRequest } from "@/lib/errors";
 
-export async function GET(request: NextRequest) {
-  const userId = request.headers.get("x-user-id");
-  if (!userId) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  const { searchParams } = request.nextUrl;
+export const GET = requireAuth(async (req, { userId }) => {
+  const { searchParams } = req.nextUrl;
   const listPending = searchParams.get("pending") === "true";
 
   if (listPending) {
@@ -22,25 +19,18 @@ export async function GET(request: NextRequest) {
 
   const status = await getConcessionStatus(userId);
   return NextResponse.json(status);
-}
+});
 
-export async function POST(request: NextRequest) {
-  const userId = request.headers.get("x-user-id");
-  if (!userId) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  const body = await request.json();
+export const POST = requireAuth(async (req, { userId }) => {
+  const body = await req.json();
   const parsed = concessionApplicationSchema.safeParse(body);
-  if (!parsed.success) {
-    return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
-  }
+  if (!parsed.success) return fromZodError(parsed.error);
 
   try {
     const concession = await applyConcession(userId, parsed.data);
     return NextResponse.json(concession, { status: 201 });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Application failed";
-    return NextResponse.json({ error: message }, { status: 400 });
+    return badRequest(message);
   }
-}
+});

@@ -1,5 +1,6 @@
 import Stripe from "stripe";
 import { db } from "@/lib/db/client";
+import { STRIPE_API_VERSION } from "@/lib/payments/constants";
 import type { CreatorPaymentAccount } from "@/types/payments";
 
 interface PaymentRow {
@@ -23,7 +24,7 @@ function rowToAccount(row: PaymentRow): CreatorPaymentAccount {
 }
 
 function getStripe(): Stripe {
-  return new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2024-12-18.acacia" });
+  return new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: STRIPE_API_VERSION });
 }
 
 /**

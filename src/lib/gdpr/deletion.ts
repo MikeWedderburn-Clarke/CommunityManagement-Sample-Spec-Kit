@@ -69,7 +69,53 @@ export async function deleteAccount(userId: string, confirmation: string): Promi
   // 10. Delete data exports
   await db().query(`DELETE FROM data_exports WHERE user_id = $1`, [userId]);
 
-  // 11. Anonymise user record (keep for aggregate FK integrity)
+  // === Spec 005 Teacher/Review tables (steps 11–17, FK-safe order) ===
+
+  // 11. Delete review reminders for this user
+  await db().query(`DELETE FROM review_reminders WHERE user_id = $1`, [userId]);
+
+  // 12. Delete reviews authored by this user
+  await db().query(`DELETE FROM reviews WHERE reviewer_id = $1`, [userId]);
+
+  // 13. Delete reviews about this user's teacher profile(s)
+  await db().query(
+    `DELETE FROM reviews WHERE teacher_profile_id IN (
+       SELECT id FROM teacher_profiles WHERE user_id = $1
+     )`,
+    [userId],
+  );
+
+  // 14. Delete event_teachers entries for this user's teacher profile(s)
+  await db().query(
+    `DELETE FROM event_teachers WHERE teacher_profile_id IN (
+       SELECT id FROM teacher_profiles WHERE user_id = $1
+     )`,
+    [userId],
+  );
+
+  // 15. Delete teacher photos
+  await db().query(
+    `DELETE FROM teacher_photos WHERE teacher_profile_id IN (
+       SELECT id FROM teacher_profiles WHERE user_id = $1
+     )`,
+    [userId],
+  );
+
+  // 16. Delete certifications
+  await db().query(
+    `DELETE FROM certifications WHERE teacher_profile_id IN (
+       SELECT id FROM teacher_profiles WHERE user_id = $1
+     )`,
+    [userId],
+  );
+
+  // 17. Delete teacher requests
+  await db().query(`DELETE FROM teacher_requests WHERE user_id = $1`, [userId]);
+
+  // 18. Delete teacher profiles
+  await db().query(`DELETE FROM teacher_profiles WHERE user_id = $1`, [userId]);
+
+  // 19. Anonymise user record (keep for aggregate FK integrity)
   await db().query(
     `UPDATE users SET email = $2, name = 'Deleted User' WHERE id = $1`,
     [userId, `deleted_${userId}@system.local`],

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "@/lib/auth/session";
 import {
   getTicketType,
   updateTicketType,
@@ -6,6 +7,7 @@ import {
   getTicketTypeAvailability,
 } from "@/lib/event-groups/ticket-types";
 import { updateTicketTypeSchema } from "@/lib/validation/recurring-schemas";
+import { unauthorized } from "@/lib/errors";
 
 export async function GET(
   _request: NextRequest,
@@ -25,10 +27,8 @@ export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ groupId: string; ticketId: string }> },
 ) {
-  const userId = request.headers.get("x-user-id");
-  if (!userId) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const session = await getServerSession();
+  if (!session) return unauthorized();
 
   const { ticketId } = await params;
   const body = await request.json();
@@ -48,10 +48,8 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ groupId: string; ticketId: string }> },
 ) {
-  const userId = request.headers.get("x-user-id");
-  if (!userId) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const session = await getServerSession();
+  if (!session) return unauthorized();
 
   const { ticketId } = await params;
   const deleted = await deleteTicketType(ticketId);
