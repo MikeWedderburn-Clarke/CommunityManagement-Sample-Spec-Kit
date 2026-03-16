@@ -100,7 +100,7 @@ describe("Concessions & Capacity", () => {
 
     it("should reject application when already approved", async () => {
       const status = await applyConcession(userId, { evidence: "ID" });
-      await reviewConcession(status.id, adminId, { decision: "approved" });
+      await reviewConcession(status.id, adminId, { action: "approve" });
       await expect(
         applyConcession(userId, { evidence: "New ID" }),
       ).rejects.toThrow("approved");
@@ -122,23 +122,23 @@ describe("Concessions & Capacity", () => {
   describe("Concession Review", () => {
     it("should approve a concession", async () => {
       const app = await applyConcession(userId, { evidence: "ID" });
-      const result = await reviewConcession(app.id, adminId, { decision: "approved" });
+      const result = await reviewConcession(app.id, adminId, { action: "approve" });
       expect(result!.status).toBe("approved");
       expect(result!.approved_by).toBe(adminId);
     });
 
     it("should reject a concession", async () => {
       const app = await applyConcession(userId, { evidence: "ID" });
-      const result = await reviewConcession(app.id, adminId, { decision: "rejected" });
+      const result = await reviewConcession(app.id, adminId, { action: "reject" });
       expect(result!.status).toBe("rejected");
       expect(result!.rejected_by).toBe(adminId);
     });
 
     it("should not review non-pending concession", async () => {
       const app = await applyConcession(userId, { evidence: "ID" });
-      await reviewConcession(app.id, adminId, { decision: "approved" });
+      await reviewConcession(app.id, adminId, { action: "approve" });
       await expect(
-        reviewConcession(app.id, adminId, { decision: "rejected" }),
+        reviewConcession(app.id, adminId, { action: "reject" }),
       ).rejects.toThrow("Cannot review");
     });
 
@@ -152,7 +152,7 @@ describe("Concessions & Capacity", () => {
       const result = await reviewConcession(
         "00000000-0000-0000-0000-000000000099",
         adminId,
-        { decision: "approved" },
+        { action: "approve" },
       );
       expect(result).toBeNull();
     });
@@ -161,7 +161,7 @@ describe("Concessions & Capacity", () => {
   describe("Concession Revocation", () => {
     it("should revoke an approved concession", async () => {
       const app = await applyConcession(userId, { evidence: "ID" });
-      await reviewConcession(app.id, adminId, { decision: "approved" });
+      await reviewConcession(app.id, adminId, { action: "approve" });
 
       const revoked = await revokeConcession(userId, adminId);
       expect(revoked!.status).toBe("revoked");

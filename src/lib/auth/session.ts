@@ -1,11 +1,11 @@
-import { getServerSession as nextGetServerSession } from "next-auth";
+import { auth } from "./config";
 
 export interface Session {
   userId: string;
 }
 
 export async function getServerSession(): Promise<Session | null> {
-  const session = await nextGetServerSession();
+  const session = await auth();
   if (!session?.user?.id) return null;
   return { userId: session.user.id };
 }
