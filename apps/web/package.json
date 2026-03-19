@@ -15,7 +15,8 @@
     "build-storybook": "storybook build",
     "db:migrate": "tsx src/db/migrate.ts",
     "db:seed:geography": "tsx src/db/seeds/geography.ts",
-    "db:seed:admin": "tsx src/db/seeds/admin.ts"
+    "db:seed:admin": "tsx src/db/seeds/admin.ts",
+    "db:seed:dev": "tsx src/db/seeds/dev.ts"
   },
   "dependencies": {
     "@acroyoga/shared": "*",

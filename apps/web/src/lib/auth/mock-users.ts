@@ -66,6 +66,48 @@ export const SAMPLE_USERS: SampleUser[] = [
     displayRole: "Member",
     grants: [],
   },
+  {
+    id: "00000000-0000-4000-a000-000000000006",
+    slug: "teacher-frank",
+    name: "Frank Teacher",
+    email: "frank@example.com",
+    displayRole: "Teacher (Verified)",
+    grants: [],
+  },
+  {
+    id: "00000000-0000-4000-a000-000000000007",
+    slug: "teacher-grace",
+    name: "Grace Yogi",
+    email: "grace@example.com",
+    displayRole: "Teacher (SF)",
+    grants: [
+      { role: "event_creator", scopeType: "city", scopeValue: "san-francisco" },
+    ],
+  },
+  {
+    id: "00000000-0000-4000-a000-000000000008",
+    slug: "teacher-hiro",
+    name: "Hiro Tanaka",
+    email: "hiro@example.com",
+    displayRole: "Teacher (Bangkok)",
+    grants: [],
+  },
+  {
+    id: "00000000-0000-4000-a000-000000000009",
+    slug: "teacher-isla",
+    name: "Isla Santos",
+    email: "isla@example.com",
+    displayRole: "Teacher (Pending)",
+    grants: [],
+  },
+  {
+    id: "00000000-0000-4000-a000-000000000010",
+    slug: "teacher-javier",
+    name: "Javier Cruz",
+    email: "javier@example.com",
+    displayRole: "Member / New Teacher",
+    grants: [],
+  },
 ];
 
 export const DEFAULT_MOCK_USER = SAMPLE_USERS[0]; // Alice Global

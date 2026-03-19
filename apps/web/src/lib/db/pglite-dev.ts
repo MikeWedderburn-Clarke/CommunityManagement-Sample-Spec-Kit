@@ -47,7 +47,18 @@ async function init(): Promise<DbClient> {
   }
 
   console.log("[PGlite dev] Ready — all migrations applied");
-  return pg as unknown as DbClient;
+  const client = pg as unknown as DbClient;
+
+  // Auto-seed dev data (users, events, teachers) on first init
+  try {
+    const { seedDevData } = await import("@/db/seeds/dev");
+    const log = await seedDevData(client);
+    log.forEach((l) => console.log(`[PGlite dev] ${l}`));
+  } catch (err) {
+    console.warn("[PGlite dev] Auto-seed skipped:", err);
+  }
+
+  return client;
 }
 
 export function getDevDb(): DbClient {
