@@ -9,10 +9,31 @@ export interface DbClient {
   ): Promise<pg.QueryResult<T>>;
 }
 
+let devDb: DbClient | null = null;
+
 export function getDb(): DbClient {
+  const dbUrl = process.env.DATABASE_URL;
+
+  // No DATABASE_URL or explicitly set to "pglite" → use PGlite file-backed dev DB
+  if (!dbUrl || dbUrl === "pglite") {
+    if (!devDb) {
+      let ready: Promise<DbClient> | null = null;
+      devDb = {
+        async query(text: string, params?: unknown[]) {
+          if (!ready) {
+            ready = import("./pglite-dev").then((m) => m.getDevDb());
+          }
+          const client = await ready;
+          return client.query(text, params);
+        },
+      } as DbClient;
+    }
+    return devDb;
+  }
+
   if (!pool) {
     pool = new pg.Pool({
-      connectionString: process.env.DATABASE_URL,
+      connectionString: dbUrl,
       max: 10,
     });
   }

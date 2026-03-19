@@ -10,6 +10,14 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
   }
 
-  const result = await searchTeachers(parsed.data);
-  return NextResponse.json(result);
+  try {
+    const result = await searchTeachers(parsed.data);
+    return NextResponse.json(result);
+  } catch (err) {
+    console.error("[GET /api/teachers]", err);
+    return NextResponse.json(
+      { error: "Failed to load teachers" },
+      { status: 500 },
+    );
+  }
 }
