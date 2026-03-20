@@ -195,11 +195,18 @@ function LevelRenderer({
   const level = levelFromLocation(selectedLocation);
   const [tick, setTick] = useState(0);
 
-  // Re-render when zoom/pan changes (for clustering)
+  // Re-render when zoom/pan changes (for clustering) — must be called unconditionally
   useMapEvents({
     zoomend: () => setTick((t) => t + 1),
     moveend: () => setTick((t) => t + 1),
   });
+
+  // Compute clusters unconditionally (avoids hook-order changes between levels)
+  const clusters = useMemo(
+    () => clusterMarkers(markers, map),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [markers, tick, map],
+  );
 
   // Globe level: show country bubbles
   if (level === "globe") {
@@ -214,11 +221,18 @@ function LevelRenderer({
               center={[country.latitude!, country.longitude!]}
               radius={Math.min(30, 12 + country.eventCount)}
               pathOptions={{ fillColor: "#6366F1", fillOpacity: 0.8, color: "#fff", weight: 2 }}
-              eventHandlers={{ click: () => onLocationSelect(country.id) }}
+              eventHandlers={{
+                click: () => onLocationSelect(country.id),
+                mouseover: (e) => e.target.openPopup(),
+                mouseout: (e) => e.target.closePopup(),
+              }}
             >
-              <Tooltip permanent direction="top" offset={[0, -8]} className="map-label-tooltip">
-                {country.name} ({country.eventCount})
+              <Tooltip permanent direction="center" className="bubble-count-tooltip">
+                {country.eventCount}
               </Tooltip>
+              <Popup closeButton={false} autoPan={false} className="map-hover-popup">
+                {country.name}
+              </Popup>
             </CircleMarker>
           ))}
       </>
@@ -239,11 +253,18 @@ function LevelRenderer({
               center={[city.latitude!, city.longitude!]}
               radius={Math.min(30, 12 + city.eventCount)}
               pathOptions={{ fillColor: "#6366F1", fillOpacity: 0.8, color: "#fff", weight: 2 }}
-              eventHandlers={{ click: () => onLocationSelect(city.id) }}
+              eventHandlers={{
+                click: () => onLocationSelect(city.id),
+                mouseover: (e) => e.target.openPopup(),
+                mouseout: (e) => e.target.closePopup(),
+              }}
             >
-              <Tooltip permanent direction="top" offset={[0, -8]} className="map-label-tooltip">
-                {city.name} ({city.eventCount})
+              <Tooltip permanent direction="center" className="bubble-count-tooltip">
+                {city.eventCount}
               </Tooltip>
+              <Popup closeButton={false} autoPan={false} className="map-hover-popup">
+                {city.name}
+              </Popup>
             </CircleMarker>
           ))}
       </>
@@ -251,12 +272,6 @@ function LevelRenderer({
   }
 
   // City level: show clustered event markers
-  const clusters = useMemo(
-    () => clusterMarkers(markers, map),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [markers, tick, map],
-  );
-
   return (
     <>
       {clusters.map((cluster, i) => {
@@ -276,7 +291,7 @@ function LevelRenderer({
             pathOptions={{ fillColor: "#6366F1", fillOpacity: 0.85, color: "#fff", weight: 2 }}
             eventHandlers={{ click: () => map.flyTo([cluster.lat, cluster.lng], map.getZoom() + 2) }}
           >
-            <Tooltip permanent direction="center" className="cluster-count-tooltip">
+            <Tooltip permanent direction="center" className="bubble-count-tooltip">
               {cluster.markers.length}
             </Tooltip>
           </CircleMarker>
@@ -330,20 +345,7 @@ export default function MapPanelInner({ tree, markers, selectedLocation, onLocat
       </MapContainer>
 
       <style>{`
-        .map-label-tooltip {
-          background: rgba(0,0,0,0.75) !important;
-          color: #fff !important;
-          border: none !important;
-          border-radius: 4px !important;
-          font-size: 12px !important;
-          font-weight: 600;
-          padding: 2px 6px !important;
-          white-space: nowrap;
-        }
-        .map-label-tooltip::before {
-          border-top-color: rgba(0,0,0,0.75) !important;
-        }
-        .cluster-count-tooltip {
+        .bubble-count-tooltip {
           background: transparent !important;
           border: none !important;
           box-shadow: none !important;
@@ -352,8 +354,23 @@ export default function MapPanelInner({ tree, markers, selectedLocation, onLocat
           font-size: 13px;
           text-align: center;
         }
-        .cluster-count-tooltip::before {
+        .bubble-count-tooltip::before {
           display: none !important;
+        }
+        .map-hover-popup .leaflet-popup-content-wrapper {
+          background: rgba(0,0,0,0.8);
+          color: #fff;
+          border-radius: 4px;
+          font-size: 12px;
+          font-weight: 600;
+          padding: 2px 8px;
+          box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+        }
+        .map-hover-popup .leaflet-popup-content {
+          margin: 4px 0;
+        }
+        .map-hover-popup .leaflet-popup-tip {
+          background: rgba(0,0,0,0.8);
         }
       `}</style>
     </div>
