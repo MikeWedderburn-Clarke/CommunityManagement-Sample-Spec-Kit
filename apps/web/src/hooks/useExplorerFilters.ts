@@ -19,7 +19,6 @@ import {
   endOfDay,
   addDays,
   nextSaturday,
-  nextSunday,
   isSaturday,
 } from "date-fns";
 

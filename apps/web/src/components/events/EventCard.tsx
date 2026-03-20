@@ -1,8 +1,8 @@
 "use client";
 
-import type { EventSummary } from "@acroyoga/shared/types/events";
+import type { EventSummary, EventCategory } from "@acroyoga/shared/types/events";
 import Link from "next/link";
-import { getCategoryColor, getCategoryTokenName } from "@/lib/category-colors";
+import { getCategoryColor } from "@/lib/category-colors";
 
 interface EventCardProps {
   event: EventSummary;
@@ -12,7 +12,7 @@ interface EventCardProps {
  * Category badge style using design tokens instead of hardcoded Tailwind classes.
  */
 function categoryBadgeStyle(category: string): React.CSSProperties {
-  const color = getCategoryColor(category as any);
+  const color = getCategoryColor(category as EventCategory);
   return {
     backgroundColor: `${color}1a`, // 10% opacity
     color,

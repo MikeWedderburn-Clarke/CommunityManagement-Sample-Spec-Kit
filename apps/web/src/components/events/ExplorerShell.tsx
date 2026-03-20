@@ -130,7 +130,7 @@ export default function ExplorerShell({ events, coordEvents }: ExplorerShellProp
   return (
     <div className="explorer-shell">
       {/* Mobile tab bar */}
-      <nav className="explorer-shell__tabs" role="tablist" aria-label={msg.ariaExplorerPanels}>
+      <div className="explorer-shell__tabs" role="tablist" aria-label={msg.ariaExplorerPanels}>
         {(["list", "map", "filters"] as MobilePanel[]).map((panel) => (
           <button
             key={panel}
@@ -142,14 +142,14 @@ export default function ExplorerShell({ events, coordEvents }: ExplorerShellProp
             {panel === "list" ? msg.tabCalendar : panel === "map" ? msg.tabMap : msg.tabFilters}
           </button>
         ))}
-      </nav>
+      </div>
 
       {/* Main grid: sidebar + content */}
       <div className="explorer-shell__grid">
         {/* Left sidebar: Location hierarchy */}
         <aside
-          role="region"
           aria-label={msg.ariaLocationFilter}
+          // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
           tabIndex={0}
           className={`explorer-shell__sidebar ${mobilePanel !== "filters" ? "explorer-shell__sidebar--hidden-mobile" : ""}`}
         >
@@ -167,6 +167,7 @@ export default function ExplorerShell({ events, coordEvents }: ExplorerShellProp
             <div
               role="region"
               aria-label={msg.ariaEventCalendar}
+              // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
               tabIndex={0}
               className="explorer-shell__calendar"
             >
@@ -235,6 +236,7 @@ export default function ExplorerShell({ events, coordEvents }: ExplorerShellProp
           <div
             role="region"
             aria-label={msg.ariaEventMap}
+            // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
             tabIndex={0}
             className={`explorer-shell__map ${mobilePanel !== "map" ? "explorer-shell__map--hidden-mobile" : ""}`}
           >

@@ -151,9 +151,11 @@ function MonthView({ grid, selectedDay, onDayClick, showCounts }: { grid: MonthG
                 <div
                   key={day.date.toISOString()}
                   role="gridcell"
+                  tabIndex={0}
                   aria-label={msg.dayEventCount(format(day.date, "EEEE, MMMM d"), totalEvents)}
                   aria-selected={isSelected}
                   onClick={() => onDayClick(day.date)}
+                  onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onDayClick(day.date); } }}
                   style={{
                     display: "flex",
                     flexDirection: "row",

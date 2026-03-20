@@ -1,4 +1,3 @@
-import type { City } from "@acroyoga/shared/types/cities";
 import type { LocationNode, CityWithContinent } from "@acroyoga/shared/types/explorer";
 import type { EventSummary } from "@acroyoga/shared/types/events";
 

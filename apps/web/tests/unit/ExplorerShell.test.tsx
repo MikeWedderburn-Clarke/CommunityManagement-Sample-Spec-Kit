@@ -66,9 +66,9 @@ describe("ExplorerShell – cross-panel interaction", () => {
 
   it("renders mobile tab bar navigation", () => {
     const { container } = render(<ExplorerShell events={events} coordEvents={coordEvents} />);
-    const nav = container.querySelector("nav.explorer-shell__tabs");
-    expect(nav).toBeTruthy();
-    const buttons = nav!.querySelectorAll("button");
+    const tablist = container.querySelector("[role='tablist'].explorer-shell__tabs");
+    expect(tablist).toBeTruthy();
+    const buttons = tablist!.querySelectorAll("button");
     expect(buttons.length).toBe(3);
     expect(buttons[0].textContent).toBe("Calendar");
     expect(buttons[1].textContent).toBe("Map");

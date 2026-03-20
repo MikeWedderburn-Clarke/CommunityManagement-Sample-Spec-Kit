@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import type { EventSummary } from "@acroyoga/shared/types/events";
 import type { MapMarkerData } from "@acroyoga/shared/types/explorer";
 import { getCategoryColor } from "@/lib/category-colors";
 import { format, parseISO } from "date-fns";

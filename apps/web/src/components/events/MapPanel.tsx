@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState, useMemo, useCallback } from "react";
+import React, { useEffect, useRef, useState, useMemo } from "react";
 import { MapContainer, TileLayer, CircleMarker, Tooltip, Marker, Popup, useMap, useMapEvents } from "react-leaflet";
 import L from "leaflet";
 import type { LocationNode, MapMarkerData, MapZoomLevel } from "@acroyoga/shared/types/explorer";
