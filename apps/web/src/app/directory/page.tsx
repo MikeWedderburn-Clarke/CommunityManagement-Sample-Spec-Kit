@@ -86,21 +86,21 @@ function MemberCard({
       )}
 
       {entry.socialLinks.length > 0 && (
-        <div className="flex gap-2" role="list" aria-label="Social links">
+        <ul className="flex gap-2 list-none p-0 m-0" aria-label="Social links">
           {entry.socialLinks.map((link) => (
-            <a
-              key={link.platform}
-              href={link.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              role="listitem"
-              aria-label={`${entry.displayName ?? "member"} on ${link.platform}`}
-              className="text-xs text-gray-500 hover:text-indigo-600 px-1.5 py-0.5 rounded border border-gray-200 hover:border-indigo-300 transition-colors"
-            >
-              {SOCIAL_ICONS[link.platform] ?? link.platform}
-            </a>
+            <li key={link.platform}>
+              <a
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`${entry.displayName ?? "member"} on ${link.platform}`}
+                className="text-xs text-gray-500 hover:text-indigo-600 px-1.5 py-0.5 rounded border border-gray-200 hover:border-indigo-300 transition-colors"
+              >
+                {SOCIAL_ICONS[link.platform] ?? link.platform}
+              </a>
+            </li>
           ))}
-        </div>
+        </ul>
       )}
 
       {isOwn && (

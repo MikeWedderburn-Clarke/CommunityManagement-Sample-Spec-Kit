@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 
 interface BlockEntry {
   userId: string;
@@ -139,7 +140,7 @@ export default function PrivacySettingsPage() {
       </section>
 
       <div className="mt-8 text-sm text-gray-500">
-        <a href="/profile" className="text-blue-600 hover:underline">Manage social link visibility →</a>
+        <Link href="/profile" className="text-blue-600 hover:underline">Manage social link visibility →</Link>
       </div>
     </div>
   );
