@@ -1,7 +1,7 @@
 // Community & Social feature types — Spec 002
 
 // Enums
-export type SocialPlatform = 'facebook' | 'instagram' | 'youtube' | 'website';
+export type SocialPlatform = 'facebook' | 'instagram' | 'youtube' | 'website' | 'tiktok' | 'twitter_x' | 'linkedin' | 'threads';
 export type LinkVisibility = 'everyone' | 'followers' | 'friends' | 'hidden';
 export type Relationship = 'self' | 'friend' | 'follower' | 'following' | 'none';
 export type ThreadEntityType = 'event' | 'city' | 'country';
