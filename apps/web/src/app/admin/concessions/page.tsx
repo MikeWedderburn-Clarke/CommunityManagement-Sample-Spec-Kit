@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { ADMIN_MESSAGES as msg } from "../admin-messages";
 
 interface ConcessionStatus {
   id: string;
@@ -37,13 +38,13 @@ export default function AdminConcessionsPage() {
     }
   };
 
-  if (loading) return <div className="p-6">Loading...</div>;
+  if (loading) return <div className="p-6">{msg.loading}</div>;
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Pending Concession Applications</h1>
+      <h1 className="text-2xl font-bold mb-4">{msg.concessionApplications}</h1>
       {pending.length === 0 ? (
-        <p className="text-gray-500">No pending applications.</p>
+        <p className="text-gray-500">{msg.noPendingApplications}</p>
       ) : (
         <div className="space-y-3">
           {pending.map((c) => (
@@ -58,13 +59,13 @@ export default function AdminConcessionsPage() {
                   onClick={() => handleReview(c.id, "approved")}
                   className="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700"
                 >
-                  Approve
+                  {msg.approve}
                 </button>
                 <button
                   onClick={() => handleReview(c.id, "rejected")}
                   className="bg-red-600 text-white px-3 py-1 rounded text-sm hover:bg-red-700"
                 >
-                  Reject
+                  {msg.reject}
                 </button>
               </div>
             </div>

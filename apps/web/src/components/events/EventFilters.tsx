@@ -2,6 +2,7 @@
 
 import { useSearchParams, useRouter } from "next/navigation";
 import type { EventCategory, SkillLevel } from "@acroyoga/shared/types/events";
+import { EVENT_MESSAGES as msg } from "./event-messages";
 
 const CATEGORIES: EventCategory[] = ["jam", "workshop", "class", "festival", "social", "retreat", "teacher_training"];
 const SKILL_LEVELS: SkillLevel[] = ["beginner", "intermediate", "advanced", "all_levels"];
@@ -63,7 +64,7 @@ export default function EventFilters() {
           className="border border-border rounded-md px-3 py-1.5 text-sm"
           aria-label="Filter by category"
         >
-          <option value="">All categories</option>
+          <option value="">{msg.allCategories}</option>
           {CATEGORIES.map((c) => (
             <option key={c} value={c}>{c.replace("_", " ")}</option>
           ))}
@@ -76,7 +77,7 @@ export default function EventFilters() {
           className="border border-border rounded-md px-3 py-1.5 text-sm"
           aria-label="Filter by skill level"
         >
-          <option value="">All levels</option>
+          <option value="">{msg.allLevels}</option>
           {SKILL_LEVELS.map((l) => (
             <option key={l} value={l}>{l.replace("_", " ")}</option>
           ))}

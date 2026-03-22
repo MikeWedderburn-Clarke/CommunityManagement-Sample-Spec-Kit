@@ -3,7 +3,7 @@ import { getServerSession } from "@/lib/auth/session";
 import { createTicketType, listTicketTypes } from "@/lib/event-groups/ticket-types";
 import { createTicketTypeSchema } from "@/lib/validation/recurring-schemas";
 import { getEventGroup } from "@/lib/event-groups/service";
-import { unauthorized } from "@/lib/errors";
+import { forbidden, unauthorized } from "@/lib/errors";
 
 export async function GET(
   _request: NextRequest,
@@ -28,7 +28,7 @@ export async function POST(
     return NextResponse.json({ error: "Event group not found" }, { status: 404 });
   }
   if (group.created_by !== userId) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    return forbidden();
   }
 
   const body = await request.json();

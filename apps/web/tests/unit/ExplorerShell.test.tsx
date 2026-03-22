@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, act } from "@testing-library/react";
 import React from "react";
 
 // Mock next/navigation
@@ -58,15 +58,20 @@ describe("ExplorerShell – cross-panel interaction", () => {
   const events = [makeEvent("e1", "jam"), makeEvent("e2", "workshop")];
   const coordEvents: EventSummaryWithCoords[] = [];
 
-  it("renders the header with category legend and quick picks", () => {
-    render(<ExplorerShell events={events} coordEvents={coordEvents} />);
+  it("renders the header with category legend and quick picks", async () => {
+    await act(async () => {
+      render(<ExplorerShell events={events} coordEvents={coordEvents} />);
+    });
     expect(screen.getByText("This Week")).toBeDefined();
     expect(screen.getByText("This Weekend")).toBeDefined();
   });
 
-  it("renders mobile tab bar navigation", () => {
-    const { container } = render(<ExplorerShell events={events} coordEvents={coordEvents} />);
-    const tablist = container.querySelector("[role='tablist'].explorer-shell__tabs");
+  it("renders mobile tab bar navigation", async () => {
+    let container: HTMLElement;
+    await act(async () => {
+      ({ container } = render(<ExplorerShell events={events} coordEvents={coordEvents} />));
+    });
+    const tablist = container!.querySelector("[role='tablist'].explorer-shell__tabs");
     expect(tablist).toBeTruthy();
     const buttons = tablist!.querySelectorAll("button");
     expect(buttons.length).toBe(3);
@@ -75,8 +80,10 @@ describe("ExplorerShell – cross-panel interaction", () => {
     expect(buttons[2].textContent).toBe("Filters");
   });
 
-  it("renders the map panel stub", () => {
-    render(<ExplorerShell events={events} coordEvents={coordEvents} />);
+  it("renders the map panel stub", async () => {
+    await act(async () => {
+      render(<ExplorerShell events={events} coordEvents={coordEvents} />);
+    });
     expect(screen.getByTestId("map-panel-stub")).toBeDefined();
   });
 });

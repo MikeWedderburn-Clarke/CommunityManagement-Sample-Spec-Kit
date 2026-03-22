@@ -1,20 +1,22 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import type { DirectoryEntry, DirectorySearchResponse } from "@acroyoga/shared/types/directory";
+import { DIRECTORY_MESSAGES as msg } from "./directory-messages";
 
 const DEBOUNCE_MS = 300;
 const ROLES = ["base", "flyer", "hybrid"] as const;
 const RELATIONSHIP_OPTIONS = [
-  { value: "", label: "All members" },
-  { value: "friends", label: "My Friends" },
-  { value: "following", label: "Following" },
-  { value: "followers", label: "Followers" },
+  { value: "", label: msg.tabAll },
+  { value: "friends", label: msg.tabFriends },
+  { value: "following", label: msg.tabFollowing },
+  { value: "followers", label: msg.tabFollowers },
 ] as const;
 const SORT_OPTIONS = [
-  { value: "name", label: "Name (A–Z)" },
-  { value: "proximity", label: "Near me" },
+  { value: "name", label: msg.sortName },
+  { value: "proximity", label: msg.sortNearMe },
 ] as const;
 
 const SOCIAL_ICONS: Record<string, string> = {
@@ -38,9 +40,11 @@ function MemberCard({
     >
       <div className="flex items-start gap-3">
         {entry.avatarUrl ? (
-          <img
+          <Image
             src={entry.avatarUrl}
             alt={`${entry.displayName ?? "member"} avatar`}
+            width={48}
+            height={48}
             className="w-12 h-12 rounded-full object-cover flex-shrink-0"
           />
         ) : (
@@ -56,7 +60,7 @@ function MemberCard({
 
         <div className="flex-1 min-w-0">
           <h2 className="text-sm font-semibold text-gray-900 truncate">
-            {entry.displayName ?? "Unnamed member"}
+            {entry.displayName ?? msg.unnamedMember}
           </h2>
           {entry.homeCityName && (
             <p className="text-xs text-gray-500 truncate">{entry.homeCityName}</p>
@@ -69,7 +73,7 @@ function MemberCard({
             )}
             {entry.isVerifiedTeacher && (
               <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-50 text-green-700">
-                ✓ Verified Teacher
+                {msg.verifiedTeacher}
               </span>
             )}
             {entry.relationship !== "none" && entry.relationship !== "self" && (
@@ -114,7 +118,7 @@ function MemberCard({
                 href="/settings/profile"
                 className="text-xs text-indigo-600 hover:underline"
               >
-                Complete profile →
+                {msg.completeProfile}
               </Link>
             )}
           </div>

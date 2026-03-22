@@ -3,12 +3,13 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { SETTINGS_MESSAGES as msg } from "./settings-messages";
 
 const settingsLinks = [
-  { href: "/settings", label: "Overview" },
-  { href: "/settings/account", label: "Account" },
-  { href: "/settings/privacy", label: "Privacy" },
-  { href: "/settings/teacher", label: "Teacher Application" },
+  { href: "/settings", label: msg.navOverview },
+  { href: "/settings/account", label: msg.navAccount },
+  { href: "/settings/privacy", label: msg.navPrivacy },
+  { href: "/settings/teacher", label: msg.navTeacher },
 ];
 
 export default function SettingsLayout({
@@ -30,7 +31,7 @@ export default function SettingsLayout({
   if (authStatus === "loading") {
     return (
       <div className="max-w-2xl mx-auto px-4 py-12 text-center">
-        <p className="text-gray-500">Loading…</p>
+        <p className="text-gray-500">{msg.loading}</p>
       </div>
     );
   }
@@ -38,12 +39,12 @@ export default function SettingsLayout({
   if (authStatus === "unauthenticated") {
     return (
       <div className="max-w-2xl mx-auto px-4 py-12 text-center">
-        <p className="text-gray-600 text-lg">Please sign in to access settings.</p>
+        <p className="text-gray-600 text-lg">{msg.signInRequired}</p>
         <Link
           href="/api/auth/signin"
           className="text-indigo-600 hover:text-indigo-800 font-medium mt-4 inline-block"
         >
-          Sign In
+          {msg.signIn}
         </Link>
       </div>
     );
@@ -74,7 +75,7 @@ export default function SettingsLayout({
               );
             })}
             <span className="block px-3 py-2 text-sm text-gray-400 cursor-default">
-              Payment Setup (coming soon)
+              {msg.navPayment}
             </span>
           </nav>
         </aside>

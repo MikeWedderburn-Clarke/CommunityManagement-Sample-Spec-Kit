@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { BOOKING_MESSAGES as msg } from "./booking-messages";
 
 interface Booking {
   id: string;
@@ -37,8 +38,8 @@ export default function MyBookingsPage() {
   if (authStatus === "unauthenticated") {
     return (
       <div className="max-w-4xl mx-auto px-4 py-12 text-center">
-        <p className="text-gray-600 text-lg">Please sign in to view your bookings.</p>
-        <Link href="/api/auth/signin" className="text-indigo-600 hover:text-indigo-800 font-medium mt-4 inline-block">Sign In</Link>
+        <p className="text-gray-600 text-lg">{msg.signInRequired}</p>
+        <Link href="/api/auth/signin" className="text-indigo-600 hover:text-indigo-800 font-medium mt-4 inline-block">{msg.signIn}</Link>
       </div>
     );
   }
@@ -57,14 +58,14 @@ export default function MyBookingsPage() {
   if (error) {
     return (
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <h1 className="text-2xl font-bold text-gray-900 mb-4">My Bookings</h1>
+        <h1 className="text-2xl font-bold text-gray-900 mb-4">{msg.title}</h1>
         <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700">
           <p className="font-medium">{error}</p>
           <button
             onClick={() => window.location.reload()}
             className="mt-3 text-sm bg-red-100 hover:bg-red-200 text-red-800 px-4 py-2 rounded"
           >
-            Try Again
+            {msg.tryAgain}
           </button>
         </div>
       </div>
@@ -73,11 +74,11 @@ export default function MyBookingsPage() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">My Bookings</h1>
+      <h1 className="text-2xl font-bold text-gray-900 mb-6">{msg.title}</h1>
       {bookings.length === 0 ? (
         <div className="text-center py-12">
-          <p className="text-gray-500 text-lg">No bookings yet.</p>
-          <Link href="/events" className="text-indigo-600 hover:text-indigo-800 font-medium mt-4 inline-block">Browse Events</Link>
+          <p className="text-gray-500 text-lg">{msg.noBookings}</p>
+          <Link href="/events" className="text-indigo-600 hover:text-indigo-800 font-medium mt-4 inline-block">{msg.browseEvents}</Link>
         </div>
       ) : (
         <div className="space-y-3">

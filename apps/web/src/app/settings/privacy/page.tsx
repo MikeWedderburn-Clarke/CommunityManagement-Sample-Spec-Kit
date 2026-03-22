@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { SETTINGS_MESSAGES as msg } from "../settings-messages";
 
 interface BlockEntry {
   userId: string;
@@ -68,10 +69,10 @@ export default function PrivacySettingsPage() {
 
   return (
     <div className="p-6 max-w-2xl mx-auto">
-      <h1 className="text-2xl font-bold mb-6">Privacy Settings</h1>
+      <h1 className="text-2xl font-bold mb-6">{msg.privacyTitle}</h1>
 
       <section className="mb-8">
-        <h2 className="text-lg font-semibold mb-3">Community Directory</h2>
+        <h2 className="text-lg font-semibold mb-3">{msg.communityDirectory}</h2>
         <div className="border border-gray-200 rounded-lg p-4">
           <label className="flex items-start gap-3 cursor-pointer">
             <div className="relative flex-shrink-0 mt-0.5">
@@ -97,10 +98,9 @@ export default function PrivacySettingsPage() {
               </div>
             </div>
             <div>
-              <p className="font-medium text-gray-900">Show me in the community directory</p>
+              <p className="font-medium text-gray-900">{msg.directoryToggle}</p>
               <p className="text-sm text-gray-500 mt-0.5">
-                When enabled, other members can find your profile in the community directory.
-                Blocked users will never see your profile.
+                {msg.directoryDesc}
               </p>
             </div>
           </label>
@@ -108,15 +108,15 @@ export default function PrivacySettingsPage() {
       </section>
 
       <section className="mb-8">
-        <h2 className="text-lg font-semibold mb-3">Blocked Users ({blocks.length})</h2>
+        <h2 className="text-lg font-semibold mb-3">{msg.blockedUsers(blocks.length)}</h2>
         {blocks.length === 0 ? (
-          <p className="text-gray-500 text-sm">No blocked users.</p>
+          <p className="text-gray-500 text-sm">{msg.noBlockedUsers}</p>
         ) : (
           <ul className="space-y-2">
             {blocks.map((b) => (
               <li key={b.userId} className="flex items-center justify-between border rounded p-3">
                 <span>{b.displayName ?? b.userId}</span>
-                <button onClick={() => unblock(b.userId)} className="text-sm text-blue-600 hover:underline">Unblock</button>
+                <button onClick={() => unblock(b.userId)} className="text-sm text-blue-600 hover:underline">{msg.unblock}</button>
               </li>
             ))}
           </ul>
@@ -124,15 +124,15 @@ export default function PrivacySettingsPage() {
       </section>
 
       <section>
-        <h2 className="text-lg font-semibold mb-3">Muted Users ({mutes.length})</h2>
+        <h2 className="text-lg font-semibold mb-3">{msg.mutedUsers(mutes.length)}</h2>
         {mutes.length === 0 ? (
-          <p className="text-gray-500 text-sm">No muted users.</p>
+          <p className="text-gray-500 text-sm">{msg.noMutedUsers}</p>
         ) : (
           <ul className="space-y-2">
             {mutes.map((m) => (
               <li key={m.userId} className="flex items-center justify-between border rounded p-3">
                 <span>{m.displayName ?? m.userId}</span>
-                <button onClick={() => unmute(m.userId)} className="text-sm text-blue-600 hover:underline">Unmute</button>
+                <button onClick={() => unmute(m.userId)} className="text-sm text-blue-600 hover:underline">{msg.unmute}</button>
               </li>
             ))}
           </ul>
@@ -140,7 +140,7 @@ export default function PrivacySettingsPage() {
       </section>
 
       <div className="mt-8 text-sm text-gray-500">
-        <Link href="/profile" className="text-blue-600 hover:underline">Manage social link visibility →</Link>
+        <Link href="/profile" className="text-blue-600 hover:underline">{msg.manageSocialLinks}</Link>
       </div>
     </div>
   );

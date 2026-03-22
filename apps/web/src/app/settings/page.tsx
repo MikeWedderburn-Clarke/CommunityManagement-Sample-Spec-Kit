@@ -1,30 +1,31 @@
 "use client";
 
 import Link from "next/link";
+import { SETTINGS_MESSAGES as msg } from "./settings-messages";
 
 const sections = [
   {
     href: "/settings/account",
-    title: "Account",
-    description: "Manage data exports and account deletion.",
+    title: msg.sectionAccount,
+    description: msg.sectionAccountDesc,
   },
   {
     href: "/settings/privacy",
-    title: "Privacy",
-    description: "Manage blocked and muted users.",
+    title: msg.sectionPrivacy,
+    description: msg.sectionPrivacyDesc,
   },
   {
     href: "/settings/teacher",
-    title: "Teacher Application",
-    description: "Apply to become a verified teacher.",
+    title: msg.sectionTeacher,
+    description: msg.sectionTeacherDesc,
   },
 ];
 
 export default function SettingsPage() {
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">Settings</h1>
-      <p className="text-gray-600 mb-6">Manage your account preferences and privacy.</p>
+      <h1 className="text-2xl font-bold text-gray-900 mb-2">{msg.title}</h1>
+      <p className="text-gray-600 mb-6">{msg.subtitle}</p>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {sections.map((s) => (
           <Link

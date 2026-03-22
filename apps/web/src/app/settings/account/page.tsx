@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { SETTINGS_MESSAGES as msg } from "../settings-messages";
 
 interface ExportEntry {
   id: string;
@@ -55,24 +56,24 @@ export default function AccountSettingsPage() {
 
   return (
     <div className="p-6 max-w-2xl mx-auto">
-      <h1 className="text-2xl font-bold mb-6">Account Settings</h1>
+      <h1 className="text-2xl font-bold mb-6">{msg.accountTitle}</h1>
 
       <section className="mb-8">
-        <h2 className="text-lg font-semibold mb-3">Data Export</h2>
+        <h2 className="text-lg font-semibold mb-3">{msg.dataExport}</h2>
         <p className="text-sm text-gray-600 mb-3">
-          Export all your data as a JSON file. Download links expire after 7 days.
+          {msg.dataExportDesc}
         </p>
         <button
           onClick={requestExport}
           disabled={exporting}
           className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
         >
-          {exporting ? "Exporting..." : "Export My Data"}
+          {exporting ? msg.exporting : msg.exportMyData}
         </button>
 
         {exports.length > 0 && (
           <div className="mt-4 space-y-2">
-            <h3 className="text-sm font-medium text-gray-500">Export History</h3>
+            <h3 className="text-sm font-medium text-gray-500">{msg.exportHistory}</h3>
             {exports.map((exp) => (
               <div key={exp.id} className="flex items-center justify-between border rounded p-3">
                 <div>
@@ -87,7 +88,7 @@ export default function AccountSettingsPage() {
                 </div>
                 {exp.status === "completed" && (
                   <a href={`/api/account/exports/${exp.id}/download`} className="text-sm text-blue-600 hover:underline">
-                    Download
+                    {msg.download}
                   </a>
                 )}
               </div>
@@ -97,17 +98,16 @@ export default function AccountSettingsPage() {
       </section>
 
       <section className="border-t pt-6">
-        <h2 className="text-lg font-semibold mb-3 text-red-600">Delete Account</h2>
+        <h2 className="text-lg font-semibold mb-3 text-red-600">{msg.deleteAccount}</h2>
         <p className="text-sm text-gray-600 mb-3">
-          This action is permanent. All your personal data will be removed. Anonymised aggregate data (RSVP counts, etc.) will be retained.
-          Messages you posted will be replaced with &quot;[deleted]&quot;.
+          {msg.deleteAccountDesc}
         </p>
         <div className="flex gap-2 items-center">
           <input
             type="text"
             value={deleteConfirm}
             onChange={(e) => setDeleteConfirm(e.target.value)}
-            placeholder='Type "DELETE" to confirm'
+            placeholder={msg.deleteConfirmPlaceholder}
             className="border rounded px-3 py-2 w-48"
             aria-label="Deletion confirmation"
           />
@@ -116,7 +116,7 @@ export default function AccountSettingsPage() {
             disabled={deleting || deleteConfirm !== "DELETE"}
             className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 disabled:opacity-50"
           >
-            {deleting ? "Deleting..." : "Delete My Account"}
+            {deleting ? msg.deleting : msg.deleteMyAccount}
           </button>
         </div>
       </section>

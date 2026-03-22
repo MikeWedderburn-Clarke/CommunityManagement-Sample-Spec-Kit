@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { PROFILE_MESSAGES as msg } from "./profile-messages";
 
 interface SocialLinkForm {
   platform: "facebook" | "instagram" | "youtube" | "website";
@@ -61,7 +62,7 @@ export default function ProfilePage() {
     setNameError(null);
     setSaveStatus("idle");
     if (!displayName.trim()) {
-      setNameError("Display name is required");
+      setNameError(msg.displayNameRequired);
       return;
     }
     setSaving(true);
@@ -126,8 +127,8 @@ export default function ProfilePage() {
   if (unauthenticated) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-12 text-center">
-        <p className="text-gray-600 text-lg">Please sign in to view your profile.</p>
-        <Link href="/api/auth/signin" className="text-indigo-600 hover:text-indigo-800 font-medium mt-4 inline-block">Sign In</Link>
+        <p className="text-gray-600 text-lg">{msg.signInToView}</p>
+        <Link href="/api/auth/signin" className="text-indigo-600 hover:text-indigo-800 font-medium mt-4 inline-block">{msg.signIn}</Link>
       </div>
     );
   }
@@ -138,79 +139,79 @@ export default function ProfilePage() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">My Profile</h1>
+      <h1 className="text-2xl font-bold text-gray-900 mb-6">{msg.myProfile}</h1>
 
       {saveStatus === "success" && (
-        <div className="mb-4 p-3 rounded bg-green-50 border border-green-200 text-green-800">Profile saved successfully!</div>
+        <div className="mb-4 p-3 rounded bg-green-50 border border-green-200 text-green-800">{msg.savedSuccess}</div>
       )}
       {saveStatus === "error" && (
-        <div className="mb-4 p-3 rounded bg-red-50 border border-red-200 text-red-800">Failed to save profile. Please try again.</div>
+        <div className="mb-4 p-3 rounded bg-red-50 border border-red-200 text-red-800">{msg.savedError}</div>
       )}
 
       <div className="space-y-4">
         <div>
-          <label htmlFor="display-name" className="block text-sm font-medium text-gray-700 mb-1">Display Name</label>
+          <label htmlFor="display-name" className="block text-sm font-medium text-gray-700 mb-1">{msg.displayNameLabel}</label>
           <input id="display-name" type="text" value={displayName} onChange={(e) => { setDisplayName(e.target.value); setNameError(null); }} className={`w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 ${nameError ? 'border-red-300' : 'border-gray-300'}`} maxLength={255} />
           {nameError && <p className="text-red-600 text-sm mt-1">{nameError}</p>}
         </div>
 
         <div>
-          <label htmlFor="bio" className="block text-sm font-medium mb-1">Bio</label>
+          <label htmlFor="bio" className="block text-sm font-medium mb-1">{msg.bioLabel}</label>
           <textarea id="bio" value={bio} onChange={(e) => setBio(e.target.value)} className="w-full border rounded px-3 py-2" rows={3} maxLength={2000} />
         </div>
 
         <div>
-          <label htmlFor="default-role" className="block text-sm font-medium mb-1">Default Role</label>
+          <label htmlFor="default-role" className="block text-sm font-medium mb-1">{msg.defaultRoleLabel}</label>
           <select id="default-role" value={defaultRole} onChange={(e) => setDefaultRole(e.target.value)} className="w-full border rounded px-3 py-2">
-            <option value="base">Base</option>
-            <option value="flyer">Flyer</option>
-            <option value="hybrid">Hybrid</option>
+            <option value="base">{msg.roleBase}</option>
+            <option value="flyer">{msg.roleFlyer}</option>
+            <option value="hybrid">{msg.roleHybrid}</option>
           </select>
         </div>
 
         <div>
-          <label htmlFor="avatar-url" className="block text-sm font-medium mb-1">Avatar URL</label>
+          <label htmlFor="avatar-url" className="block text-sm font-medium mb-1">{msg.avatarUrlLabel}</label>
           <input id="avatar-url" type="url" value={avatarUrl} onChange={(e) => setAvatarUrl(e.target.value)} className="w-full border rounded px-3 py-2" />
         </div>
 
         <div>
-          <p className="block text-sm font-medium mb-1">Home City</p>
+          <p className="block text-sm font-medium mb-1">{msg.homeCityLabel}</p>
           <div className="flex gap-2 items-center">
-            <span className="text-sm text-gray-600">{homeCityName ?? "Not set"}</span>
+            <span className="text-sm text-gray-600">{homeCityName ?? msg.notSet}</span>
             <button onClick={detectCity} disabled={detecting} className="text-sm bg-blue-100 text-blue-700 px-3 py-1 rounded hover:bg-blue-200 disabled:opacity-50" aria-label="Detect my city">
-              {detecting ? "Detecting..." : "Auto-detect"}
+              {detecting ? msg.detecting : msg.autoDetect}
             </button>
           </div>
         </div>
 
         <div>
-          <p className="block text-sm font-medium mb-2">Social Links</p>
+          <p className="block text-sm font-medium mb-2">{msg.socialLinksLabel}</p>
           {socialLinks.map((link, i) => (
             <div key={i} className="flex gap-2 items-center mb-2">
               <select value={link.platform} onChange={(e) => updateLink(i, "platform", e.target.value)} className="border rounded px-2 py-1" aria-label="Platform">
-                <option value="facebook">Facebook</option>
-                <option value="instagram">Instagram</option>
-                <option value="youtube">YouTube</option>
-                <option value="website">Website</option>
+                <option value="facebook">{msg.platformFacebook}</option>
+                <option value="instagram">{msg.platformInstagram}</option>
+                <option value="youtube">{msg.platformYouTube}</option>
+                <option value="website">{msg.platformWebsite}</option>
               </select>
               <input type="url" value={link.url} onChange={(e) => updateLink(i, "url", e.target.value)} className="flex-1 border rounded px-2 py-1" placeholder="URL" aria-label={`${link.platform} URL`} />
               <select value={link.visibility} onChange={(e) => updateLink(i, "visibility", e.target.value)} className="border rounded px-2 py-1" aria-label={`${link.platform} visibility`}>
-                <option value="everyone">Everyone</option>
-                <option value="followers">Followers</option>
-                <option value="friends">Friends</option>
-                <option value="hidden">Hidden</option>
+                <option value="everyone">{msg.visibilityEveryone}</option>
+                <option value="followers">{msg.visibilityFollowers}</option>
+                <option value="friends">{msg.visibilityFriends}</option>
+                <option value="hidden">{msg.visibilityHidden}</option>
               </select>
               <button onClick={() => removeLink(i)} className="text-red-500 hover:text-red-700" aria-label={`Remove ${link.platform} link`}>×</button>
             </div>
           ))}
           {socialLinks.length < 4 && (
-            <button onClick={addLink} className="text-sm text-blue-600 hover:underline">+ Add link</button>
+            <button onClick={addLink} className="text-sm text-blue-600 hover:underline">{msg.addLink}</button>
           )}
         </div>
       </div>
 
       <button onClick={saveProfile} disabled={saving} className="mt-6 bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 disabled:opacity-50">
-        {saving ? "Saving..." : "Save Profile"}
+        {saving ? msg.saving : msg.saveProfile}
       </button>
     </div>
   );

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "@/lib/auth/session";
 import { getBooking, cancelBooking } from "@/lib/bookings/service";
-import { unauthorized } from "@/lib/errors";
+import { forbidden, unauthorized } from "@/lib/errors";
 
 export async function GET(
   request: NextRequest,
@@ -17,7 +17,7 @@ export async function GET(
     return NextResponse.json({ error: "Booking not found" }, { status: 404 });
   }
   if (booking.user_id !== userId) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    return forbidden();
   }
 
   return NextResponse.json(booking);
@@ -37,7 +37,7 @@ export async function DELETE(
     return NextResponse.json({ error: "Booking not found" }, { status: 404 });
   }
   if (booking.user_id !== userId) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    return forbidden();
   }
 
   try {

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { TEACHER_MESSAGES as msg } from "./teacher-messages";
 
 interface TeacherSummary {
   id: string;
@@ -47,12 +48,12 @@ export default function TeachersPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Teachers</h1>
+      <h1 className="text-2xl font-bold text-gray-900 mb-6">{msg.title}</h1>
 
       <div className="flex flex-col sm:flex-row gap-3 mb-6">
         <input
           type="text"
-          placeholder="Search teachers..."
+          placeholder={msg.searchPlaceholder}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           className="border border-gray-300 px-3 py-2 rounded-md flex-1 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
@@ -62,14 +63,14 @@ export default function TeachersPage() {
           onChange={(e) => setBadge(e.target.value)}
           className="border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
         >
-          <option value="">All statuses</option>
-          <option value="verified">Verified</option>
-          <option value="expired">Expired</option>
-          <option value="pending">Pending</option>
+          <option value="">{msg.allStatuses}</option>
+          <option value="verified">{msg.verified}</option>
+          <option value="expired">{msg.expired}</option>
+          <option value="pending">{msg.pending}</option>
         </select>
         <input
           type="text"
-          placeholder="Specialty..."
+          placeholder={msg.specialtyPlaceholder}
           value={specialty}
           onChange={(e) => setSpecialty(e.target.value)}
           className="border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
@@ -79,7 +80,7 @@ export default function TeachersPage() {
       {error ? (
         <div className="text-center py-12">
           <p className="text-red-600 text-lg">{error}</p>
-          <button onClick={() => window.location.reload()} className="text-indigo-600 hover:underline mt-2">Retry</button>
+          <button onClick={() => window.location.reload()} className="text-indigo-600 hover:underline mt-2">{msg.retry}</button>
         </div>
       ) : loading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -93,8 +94,8 @@ export default function TeachersPage() {
         </div>
       ) : teachers.length === 0 ? (
         <div className="text-center py-12">
-          <p className="text-gray-500 text-lg">No teachers found.</p>
-          <p className="text-gray-400 mt-2">Try adjusting your search or filters.</p>
+          <p className="text-gray-500 text-lg">{msg.noTeachersFound}</p>
+          <p className="text-gray-400 mt-2">{msg.tryAdjusting}</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

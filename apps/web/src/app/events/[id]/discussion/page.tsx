@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, use } from "react";
+import { DISCUSSION_MESSAGES as msg } from "./discussion-messages";
 
 interface MessageData {
   id: string;
@@ -46,12 +47,12 @@ export default function EventDiscussionPage({ params }: { params: Promise<{ id: 
           setCanPost(true);
         } else {
           setCanPost(false);
-          setPostReason("RSVP required to post");
+          setPostReason(msg.rsvpRequired);
         }
       })
       .catch(() => {
         setCanPost(false);
-        setPostReason("Not authenticated");
+        setPostReason(msg.notAuthenticated);
       });
   }, [eventId]);
 
@@ -64,8 +65,8 @@ export default function EventDiscussionPage({ params }: { params: Promise<{ id: 
       body: JSON.stringify({ content: newMessage }),
     });
     if (res.ok) {
-      const msg = await res.json();
-      setMessages((prev) => [...prev, msg]);
+      const newMsg = await res.json();
+      setMessages((prev) => [...prev, newMsg]);
       setNewMessage("");
     }
     setSending(false);
@@ -108,39 +109,39 @@ export default function EventDiscussionPage({ params }: { params: Promise<{ id: 
 
   return (
     <div className="p-6 max-w-3xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Event Discussion</h1>
+      <h1 className="text-2xl font-bold mb-4">{msg.title}</h1>
 
       {pinnedMessages.length > 0 && (
         <div className="mb-4 space-y-2">
-          <h2 className="text-sm font-semibold text-gray-500">📌 Pinned</h2>
-          {pinnedMessages.map((msg) => (
-            <div key={msg.id} className="border-l-4 border-yellow-400 bg-yellow-50 p-3 rounded">
-              <div className="text-sm font-medium">{msg.authorName ?? "Unknown"}</div>
-              <p className="text-sm">{msg.content}</p>
+          <h2 className="text-sm font-semibold text-gray-500">{msg.pinned}</h2>
+          {pinnedMessages.map((m) => (
+            <div key={m.id} className="border-l-4 border-yellow-400 bg-yellow-50 p-3 rounded">
+              <div className="text-sm font-medium">{m.authorName ?? msg.unknownAuthor}</div>
+              <p className="text-sm">{m.content}</p>
             </div>
           ))}
         </div>
       )}
 
       <div className="space-y-3 mb-6">
-        {regularMessages.map((msg) => (
-          <div key={msg.id} className={`p-3 rounded border ${msg.isDeleted ? "opacity-50" : ""}`}>
+        {regularMessages.map((m) => (
+          <div key={m.id} className={`p-3 rounded border ${m.isDeleted ? "opacity-50" : ""}`}>
             <div className="flex justify-between items-baseline">
-              <span className="text-sm font-medium">{msg.authorName ?? "Unknown"}</span>
+              <span className="text-sm font-medium">{m.authorName ?? msg.unknownAuthor}</span>
               <span className="text-xs text-gray-400">
-                {new Date(msg.createdAt).toLocaleString()}
-                {msg.editedAt && " (edited)"}
+                {new Date(m.createdAt).toLocaleString()}
+                {m.editedAt && " (edited)"}
               </span>
             </div>
-            <p className="text-sm mt-1">{msg.content}</p>
-            {!msg.isDeleted && (
+            <p className="text-sm mt-1">{m.content}</p>
+            {!m.isDeleted && (
               <div className="flex gap-1 mt-2">
                 {Object.entries(emojiLabels).map(([emoji, label]) => {
-                  const reaction = msg.reactions.find((r) => r.emoji === emoji);
+                  const reaction = m.reactions.find((r) => r.emoji === emoji);
                   return (
                     <button
                       key={emoji}
-                      onClick={() => toggleReaction(msg.id, emoji)}
+                      onClick={() => toggleReaction(m.id, emoji)}
                       className={`text-xs px-2 py-0.5 rounded border ${
                         reaction?.reacted ? "bg-blue-100 border-blue-300" : "bg-gray-50 border-gray-200"
                       } hover:bg-blue-50`}
@@ -177,7 +178,7 @@ export default function EventDiscussionPage({ params }: { params: Promise<{ id: 
               disabled={sending || !newMessage.trim()}
               className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
             >
-              Send
+              {sending ? msg.sending : msg.send}
             </button>
           </div>
         ) : (

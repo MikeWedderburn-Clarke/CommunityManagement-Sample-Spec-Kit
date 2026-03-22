@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "@/lib/auth/session";
 import { getEventById, updateEvent, cancelEvent, deleteEvent } from "@/lib/events/service";
 import { updateEventSchema } from "@/lib/validation/schemas";
-import { unauthorized } from "@/lib/errors";
+import { forbidden, unauthorized } from "@/lib/errors";
 
 export async function GET(
   _request: NextRequest,
@@ -30,7 +30,7 @@ export async function PATCH(
     return NextResponse.json({ error: "Event not found" }, { status: 404 });
   }
   if (existing.createdBy !== userId) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    return forbidden();
   }
 
   const body = await request.json();
@@ -57,7 +57,7 @@ export async function DELETE(
     return NextResponse.json({ error: "Event not found" }, { status: 404 });
   }
   if (existing.createdBy !== userId) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    return forbidden();
   }
 
   const action = request.nextUrl.searchParams.get("action");

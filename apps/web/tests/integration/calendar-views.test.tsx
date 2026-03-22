@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, act } from "@testing-library/react";
 import React from "react";
 
 const mockPush = vi.fn();
@@ -61,15 +61,19 @@ describe("Calendar month view integration", () => {
     makeEvent("e2", "workshop", "2025-01-16T14:00:00Z"),
   ];
 
-  it("renders month grid with navigation buttons", () => {
-    render(<ExplorerShell events={events} coordEvents={[]} />);
+  it("renders month grid with navigation buttons", async () => {
+    await act(async () => {
+      render(<ExplorerShell events={events} coordEvents={[]} />);
+    });
     expect(screen.getByRole("button", { name: /previous month/i })).toBeDefined();
     expect(screen.getByRole("button", { name: /next month/i })).toBeDefined();
     expect(screen.getByRole("grid")).toBeDefined();
   });
 
-  it("renders day cells in the month grid", () => {
-    render(<ExplorerShell events={events} coordEvents={[]} />);
+  it("renders day cells in the month grid", async () => {
+    await act(async () => {
+      render(<ExplorerShell events={events} coordEvents={[]} />);
+    });
     const cells = screen.getAllByRole("gridcell");
     expect(cells.length).toBeGreaterThanOrEqual(28);
   });

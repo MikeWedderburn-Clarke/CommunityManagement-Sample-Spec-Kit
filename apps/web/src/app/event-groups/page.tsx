@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { EVENT_GROUP_MESSAGES as msg } from "./event-group-messages";
 
 interface EventGroup {
   id: string;
@@ -25,13 +26,13 @@ export default function EventGroupsPage() {
       });
   }, []);
 
-  if (loading) return <div className="p-6">Loading event groups...</div>;
+  if (loading) return <div className="p-6">{msg.loading}</div>;
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Event Groups</h1>
+      <h1 className="text-2xl font-bold mb-4">{msg.title}</h1>
       {groups.length === 0 ? (
-        <p className="text-gray-500">No event groups yet.</p>
+        <p className="text-gray-500">{msg.noGroups}</p>
       ) : (
         <div className="grid gap-4 md:grid-cols-2">
           {groups.map((group) => (

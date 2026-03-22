@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { SETTINGS_MESSAGES as msg } from "../settings-messages";
 
 const SPECIALTIES = [
   "washing_machines", "hand_to_hand", "therapeutic",
@@ -65,7 +66,7 @@ export default function TeacherApplicationPage() {
 
   return (
     <div className="p-6 max-w-2xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Apply as Teacher</h1>
+      <h1 className="text-2xl font-bold mb-4">{msg.applyAsTeacher}</h1>
 
       {result && (
         <div
@@ -79,19 +80,19 @@ export default function TeacherApplicationPage() {
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
-          <label htmlFor="teacher-bio" className="block font-medium mb-1">Bio</label>
+          <label htmlFor="teacher-bio" className="block font-medium mb-1">{msg.bio}</label>
           <textarea
             id="teacher-bio"
             value={bio}
             onChange={(e) => setBio(e.target.value)}
             className="w-full border rounded p-2"
             rows={4}
-            placeholder="Tell us about your teaching experience..."
+            placeholder={msg.bioPlaceholder}
           />
         </div>
 
         <div>
-          <p className="block font-medium mb-1">Specialties</p>
+          <p className="block font-medium mb-1">{msg.specialtiesLabel}</p>
           <div className="flex flex-wrap gap-2" role="group" aria-label="Select specialties">
             {SPECIALTIES.map((s) => (
               <button
@@ -112,38 +113,38 @@ export default function TeacherApplicationPage() {
         </div>
 
         <div>
-          <label htmlFor="teacher-city" className="block font-medium mb-1">City</label>
+          <label htmlFor="teacher-city" className="block font-medium mb-1">{msg.city}</label>
           <input
             id="teacher-city"
             type="text"
             value={city}
             onChange={(e) => setCity(e.target.value)}
             className="border rounded p-2 w-full"
-            placeholder="Your city"
+            placeholder={msg.cityPlaceholder}
           />
         </div>
 
         <div>
-          <p className="block font-medium mb-2">Credentials</p>
+          <p className="block font-medium mb-2">{msg.credentials}</p>
           {credentials.map((c, i) => (
             <div key={i} className="border rounded p-3 mb-2 space-y-2">
               <input
                 type="text"
-                placeholder="Certification name *"
+                placeholder={msg.certNamePlaceholder}
                 value={c.certificationName}
                 onChange={(e) => updateCredential(i, "certificationName", e.target.value)}
                 className="border rounded p-2 w-full"
               />
               <input
                 type="text"
-                placeholder="Issuing body *"
+                placeholder={msg.issuingBodyPlaceholder}
                 value={c.issuingBody}
                 onChange={(e) => updateCredential(i, "issuingBody", e.target.value)}
                 className="border rounded p-2 w-full"
               />
               <input
                 type="date"
-                placeholder="Expiry date"
+                placeholder={msg.expiryDatePlaceholder}
                 value={c.expiryDate}
                 onChange={(e) => updateCredential(i, "expiryDate", e.target.value)}
                 className="border rounded p-2 w-full"
@@ -155,7 +156,7 @@ export default function TeacherApplicationPage() {
             onClick={addCredential}
             className="text-blue-600 text-sm underline"
           >
-            + Add another credential
+            {msg.addCredential}
           </button>
         </div>
 
@@ -164,7 +165,7 @@ export default function TeacherApplicationPage() {
           disabled={submitting}
           className="bg-blue-600 text-white px-6 py-2 rounded disabled:opacity-50"
         >
-          {submitting ? "Submitting..." : "Submit Application"}
+          {submitting ? msg.submitting : msg.submitApplication}
         </button>
       </form>
     </div>

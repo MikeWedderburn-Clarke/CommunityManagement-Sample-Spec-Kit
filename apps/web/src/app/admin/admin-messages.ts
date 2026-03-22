@@ -1,0 +1,38 @@
+/**
+ * All user-facing strings for the Admin pages.
+ * Constitution VIII: Extractable for i18n — no hardcoded strings in JSX.
+ */
+
+export const ADMIN_MESSAGES = {
+  // Dashboard
+  dashboardTitle: "Admin Dashboard",
+  dashboardSubtitle: "Overview of pending actions and admin tools.",
+  teacherRequests: "Teacher Requests",
+  concessions: "Concessions",
+  permissions: "Permissions",
+  requests: "requests",
+  pending: "pending",
+
+  // Teacher applications
+  loading: "Loading...",
+  teacherApplications: "Teacher Applications",
+  noPendingApplications: "No pending applications.",
+  approve: "Approve",
+  reject: "Reject",
+  credentialsLabel: "Credentials:",
+
+  // Concession applications
+  concessionApplications: "Pending Concession Applications",
+
+  // Permissions
+  permissionGrants: "Permission Grants",
+  noActiveGrants: "No active permission grants.",
+  errorLoadingPermissions: "Error loading permissions",
+  tryAgain: "Try again",
+  revoke: "Revoke",
+  tableUser: "User",
+  tableRole: "Role",
+  tableScope: "Scope",
+  tableGranted: "Granted",
+  tableActions: "Actions",
+} as const;

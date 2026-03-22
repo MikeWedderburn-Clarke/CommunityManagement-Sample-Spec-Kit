@@ -1,8 +1,10 @@
 "use client";
 
 import type { EventSummary, EventCategory } from "@acroyoga/shared/types/events";
+import Image from "next/image";
 import Link from "next/link";
 import { getCategoryColor } from "@/lib/category-colors";
+import { EVENT_MESSAGES as msg } from "./event-messages";
 
 interface EventCardProps {
   event: EventSummary;
@@ -62,9 +64,11 @@ export default function EventCard({ event }: EventCardProps) {
         </div>
 
         {event.posterImageUrl && (
-          <img
+          <Image
             src={event.posterImageUrl}
             alt=""
+            width={64}
+            height={64}
             className="w-16 h-16 rounded-md object-cover ml-3 flex-shrink-0"
           />
         )}
@@ -79,23 +83,23 @@ export default function EventCard({ event }: EventCardProps) {
         </span>
 
         {event.isNew && (
-          <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-success/10 text-success">New</span>
+          <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-success/10 text-success">{msg.badgeNew}</span>
         )}
         {event.isUpdated && (
-          <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-info/10 text-info">Updated</span>
+          <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-info/10 text-info">{msg.badgeUpdated}</span>
         )}
         {isFull && (
-          <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-danger/10 text-danger">Full</span>
+          <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-danger/10 text-danger">{msg.badgeFull}</span>
         )}
       </div>
 
       <div className="flex items-center justify-between mt-3 text-sm">
         <span className="font-medium">
-          {isFree ? "Free" : `${event.currency} ${event.cost.toFixed(2)}`}
+          {isFree ? msg.free : `${event.currency} ${event.cost.toFixed(2)}`}
         </span>
         <span className="text-muted-foreground">
-          {event.confirmedCount}/{event.capacity} attending
-          {event.interestedCount > 0 && ` · ${event.interestedCount} interested`}
+          {event.confirmedCount}/{event.capacity} {msg.attending}
+          {event.interestedCount > 0 && ` · ${event.interestedCount} ${msg.interested}`}
         </span>
       </div>
     </Link>

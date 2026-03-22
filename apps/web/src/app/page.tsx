@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import EventCard from "@/components/events/EventCard";
 import type { EventSummary } from "@acroyoga/shared/types/events";
+import { HOME_MESSAGES as msg } from "./home-messages";
 
 export default function Home() {
   const [events, setEvents] = useState<EventSummary[]>([]);
@@ -27,23 +28,23 @@ export default function Home() {
       <section className="bg-indigo-600 text-white py-20 px-4">
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-4xl sm:text-5xl font-bold mb-4">
-            Find Your AcroYoga Community
+            {msg.heroTitle}
           </h1>
           <p className="text-lg sm:text-xl text-indigo-100 mb-8 max-w-2xl mx-auto">
-            Discover events, connect with teachers, and join a vibrant community of acrobatic yoga enthusiasts near you.
+            {msg.heroSubtitle}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/events"
               className="bg-white text-indigo-600 px-8 py-3 rounded-lg font-semibold hover:bg-indigo-50 transition-colors"
             >
-              Browse Events
+              {msg.browseEvents}
             </Link>
             <Link
               href="/teachers"
               className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-colors"
             >
-              Find Teachers
+              {msg.findTeachers}
             </Link>
           </div>
         </div>
@@ -52,12 +53,12 @@ export default function Home() {
       {/* Featured Events */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">Upcoming Events</h2>
+          <h2 className="text-2xl font-bold text-gray-900">{msg.upcomingEvents}</h2>
           <Link
             href="/events"
             className="text-indigo-600 hover:text-indigo-800 text-sm font-medium"
           >
-            View all →
+            {msg.viewAll}
           </Link>
         </div>
 
@@ -74,19 +75,19 @@ export default function Home() {
           </div>
         ) : error ? (
           <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700">
-            <p className="font-medium">Failed to load events</p>
+            <p className="font-medium">{msg.failedToLoadEvents}</p>
             <p className="text-sm mt-1">{error}</p>
             <button
               onClick={() => window.location.reload()}
               className="mt-3 text-sm bg-red-100 hover:bg-red-200 text-red-800 px-4 py-2 rounded"
             >
-              Try Again
+              {msg.tryAgain}
             </button>
           </div>
         ) : events.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-gray-500 text-lg">No upcoming events yet.</p>
-            <p className="text-gray-400 mt-2">Check back soon or explore our teacher directory!</p>
+            <p className="text-gray-500 text-lg">{msg.noUpcomingEvents}</p>
+            <p className="text-gray-400 mt-2">{msg.checkBackSoon}</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

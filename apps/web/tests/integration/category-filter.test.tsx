@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, act } from "@testing-library/react";
 import React from "react";
 
 const mockPush = vi.fn();
@@ -59,22 +59,28 @@ describe("Category filter integration", () => {
     makeEvent("e3", "class"),
   ];
 
-  it("clicking a category toggle updates URL with categories param", () => {
-    render(<ExplorerShell events={events} coordEvents={[]} />);
+  it("clicking a category toggle updates URL with categories param", async () => {
+    await act(async () => {
+      render(<ExplorerShell events={events} coordEvents={[]} />);
+    });
     // Find a category toggle button (has aria-label ending with "category filter")
     const categoryBtn = screen.getAllByRole("button").find(
       (b) => b.getAttribute("aria-label")?.includes("category filter")
     );
     if (categoryBtn) {
-      fireEvent.click(categoryBtn);
+      await act(async () => {
+        fireEvent.click(categoryBtn);
+      });
       expect(mockPush).toHaveBeenCalled();
       const lastCall = mockPush.mock.calls[mockPush.mock.calls.length - 1][0] as string;
       expect(lastCall).toContain("categories=");
     }
   });
 
-  it("renders category legend with toggle buttons", () => {
-    render(<ExplorerShell events={events} coordEvents={[]} />);
+  it("renders category legend with toggle buttons", async () => {
+    await act(async () => {
+      render(<ExplorerShell events={events} coordEvents={[]} />);
+    });
     const pressedButtons = screen.getAllByRole("button").filter(
       (b) => b.getAttribute("aria-pressed") !== null
     );

@@ -4,6 +4,7 @@ import React from "react";
 import { CategoryLegend } from "@acroyoga/shared-ui";
 import { CATEGORY_COLORS, ALL_CATEGORIES } from "@/lib/category-colors";
 import type { EventCategory } from "@acroyoga/shared/types/events";
+import { EVENT_MESSAGES as msg } from "./event-messages";
 
 interface CategoryLegendBarProps {
   enabledCategories: EventCategory[];
@@ -33,7 +34,7 @@ export default function CategoryLegendBar({ enabledCategories, onToggle, onToggl
             minHeight: 32,
           }}
         >
-          {allSelected ? "None" : "All"}
+          {allSelected ? msg.legendNone : msg.legendAll}
         </button>
       )}
       <CategoryLegend

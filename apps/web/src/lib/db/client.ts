@@ -43,8 +43,8 @@ export function getDb(): DbClient {
 /** For tests: inject a PGlite-compatible client */
 let testClient: DbClient | null = null;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function setTestDb(client: any): void {
+/** Accepts PGlite or pg Pool — PGlite's Results shape is close enough at runtime */
+export function setTestDb(client: { query(text: string, params?: unknown[]): Promise<{ rows: unknown[] }> }): void {
   testClient = client as DbClient;
 }
 

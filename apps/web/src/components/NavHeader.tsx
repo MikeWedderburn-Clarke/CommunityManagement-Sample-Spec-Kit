@@ -4,13 +4,14 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
+import { NAV_MESSAGES as msg } from "./nav-messages";
 
 const navLinks = [
-  { href: "/", label: "Home" },
-  { href: "/events", label: "Events" },
-  { href: "/teachers", label: "Teachers" },
-  { href: "/profile", label: "Profile" },
-  { href: "/settings", label: "Settings" },
+  { href: "/", label: msg.navHome },
+  { href: "/events", label: msg.navEvents },
+  { href: "/teachers", label: msg.navTeachers },
+  { href: "/profile", label: msg.navProfile },
+  { href: "/settings", label: msg.navSettings },
 ];
 
 export default function NavHeader() {
@@ -28,7 +29,7 @@ export default function NavHeader() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
           <Link href="/" className="text-xl font-bold text-primary">
-            AcroYoga Community
+            {msg.brandName}
           </Link>
 
           {/* Desktop nav */}
@@ -55,14 +56,14 @@ export default function NavHeader() {
                 href="/profile"
                 className="text-sm text-foreground hover:text-foreground font-medium"
               >
-                {session.user.name ?? "My Account"}
+                {session.user.name ?? msg.myAccount}
               </Link>
             ) : (
               <Link
                 href="/api/auth/signin"
                 className="text-sm bg-primary text-white px-4 py-2 rounded-md hover:bg-primary-hover"
               >
-                Sign In
+                {msg.signIn}
               </Link>
             )}
           </nav>
@@ -110,7 +111,7 @@ export default function NavHeader() {
                 onClick={() => setMenuOpen(false)}
                 className="block px-3 py-2 rounded-md text-base font-medium text-muted-foreground hover:bg-muted"
               >
-                {session.user.name ?? "My Account"}
+                {session.user.name ?? msg.myAccount}
               </Link>
             ) : (
               <Link
@@ -118,7 +119,7 @@ export default function NavHeader() {
                 onClick={() => setMenuOpen(false)}
                 className="block px-3 py-2 rounded-md text-base font-medium text-primary hover:bg-primary/10"
               >
-                Sign In
+                {msg.signIn}
               </Link>
             )
           )}

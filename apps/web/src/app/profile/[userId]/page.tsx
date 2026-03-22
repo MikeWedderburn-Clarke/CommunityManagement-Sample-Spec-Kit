@@ -1,6 +1,8 @@
 "use client";
 
+import Image from "next/image";
 import { useState, useEffect, use } from "react";
+import { PROFILE_MESSAGES as msg } from "../profile-messages";
 
 interface ProfileData {
   userId: string;
@@ -87,14 +89,14 @@ export default function UserProfilePage({ params }: { params: Promise<{ userId: 
   }
 
   if (notFound || !profile) {
-    return <div className="p-6 max-w-2xl mx-auto"><h1 className="text-2xl">User not found</h1></div>;
+    return <div className="p-6 max-w-2xl mx-auto"><h1 className="text-2xl">{msg.userNotFound}</h1></div>;
   }
 
   const roleLabel: Record<string, string> = {
-    none: "Follow",
-    following: "Following",
-    follower: "Follow back",
-    friend: "Friends",
+    none: msg.follow,
+    following: msg.following,
+    follower: msg.followBack,
+    friend: msg.friends,
     self: "",
   };
 
@@ -102,10 +104,10 @@ export default function UserProfilePage({ params }: { params: Promise<{ userId: 
     <div className="p-6 max-w-2xl mx-auto">
       <div className="flex items-start gap-4">
         {profile.avatarUrl && (
-          <img src={profile.avatarUrl} alt="" className="w-20 h-20 rounded-full object-cover" />
+          <Image src={profile.avatarUrl} alt="" width={80} height={80} className="w-20 h-20 rounded-full object-cover" />
         )}
         <div>
-          <h1 className="text-2xl font-bold">{profile.displayName ?? "Anonymous"}</h1>
+          <h1 className="text-2xl font-bold">{profile.displayName ?? msg.anonymous}</h1>
           {profile.homeCityName && <p className="text-gray-600">{profile.homeCityName}</p>}
           {profile.defaultRole && (
             <span className="text-sm bg-purple-100 text-purple-700 px-2 py-0.5 rounded capitalize">
@@ -119,7 +121,7 @@ export default function UserProfilePage({ params }: { params: Promise<{ userId: 
 
       {profile.socialLinks.length > 0 && (
         <div className="mt-4 space-y-1">
-          <h2 className="text-sm font-medium text-gray-500">Links</h2>
+          <h2 className="text-sm font-medium text-gray-500">{msg.links}</h2>
           {profile.socialLinks.map((link) => (
             <a
               key={link.platform}
@@ -145,9 +147,9 @@ export default function UserProfilePage({ params }: { params: Promise<{ userId: 
               {roleLabel[profile.relationship]}
             </button>
           )}
-          <button onClick={handleBlock} className="bg-red-100 text-red-700 px-4 py-2 rounded hover:bg-red-200">Block</button>
-          <button onClick={handleMute} className="bg-yellow-100 text-yellow-700 px-4 py-2 rounded hover:bg-yellow-200">Mute</button>
-          <button onClick={handleReport} className="bg-gray-100 text-gray-700 px-4 py-2 rounded hover:bg-gray-200">Report</button>
+          <button onClick={handleBlock} className="bg-red-100 text-red-700 px-4 py-2 rounded hover:bg-red-200">{msg.block}</button>
+          <button onClick={handleMute} className="bg-yellow-100 text-yellow-700 px-4 py-2 rounded hover:bg-yellow-200">{msg.mute}</button>
+          <button onClick={handleReport} className="bg-gray-100 text-gray-700 px-4 py-2 rounded hover:bg-gray-200">{msg.report}</button>
         </div>
       )}
     </div>

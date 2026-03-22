@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import type { EventDetail } from "@acroyoga/shared/types/events";
+import { EVENT_MESSAGES as msg } from "./event-messages";
 
 export default function EventDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -40,7 +41,7 @@ export default function EventDetailPage() {
   if (error || !event) {
     return (
       <div className="max-w-3xl mx-auto p-6 text-danger" role="alert">
-        {error ?? "Event not found"}
+        {error ?? msg.eventNotFound}
       </div>
     );
   }
@@ -61,7 +62,7 @@ export default function EventDetailPage() {
           {event.skillLevel.replace("_", " ")}
         </span>
         {event.status === "cancelled" && (
-          <span className="text-sm bg-danger/10 text-danger px-2 py-0.5 rounded-full">Cancelled</span>
+          <span className="text-sm bg-danger/10 text-danger px-2 py-0.5 rounded-full">{msg.cancelled}</span>
         )}
       </div>
 
@@ -77,9 +78,9 @@ export default function EventDetailPage() {
         <h2 className="font-semibold">{event.venue.name}</h2>
         <p className="text-sm text-muted-foreground">{event.venue.address}</p>
         <div className="flex gap-3 mt-2 text-sm">
-          <a href={event.venue.mapLinks.google} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Google Maps</a>
-          <a href={event.venue.mapLinks.apple} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Apple Maps</a>
-          <a href={event.venue.mapLinks.osm} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">OpenStreetMap</a>
+          <a href={event.venue.mapLinks.google} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">{msg.googleMaps}</a>
+          <a href={event.venue.mapLinks.apple} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">{msg.appleMaps}</a>
+          <a href={event.venue.mapLinks.osm} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">{msg.openStreetMap}</a>
         </div>
       </div>
 
@@ -93,7 +94,7 @@ export default function EventDetailPage() {
       {/* Prerequisites */}
       {event.prerequisites && (
         <div className="mt-4 p-3 bg-warning/10 border border-warning/30 rounded">
-          <h3 className="font-semibold text-warning">Prerequisites</h3>
+          <h3 className="font-semibold text-warning">{msg.prerequisites}</h3>
           <p className="text-sm text-warning mt-1">{event.prerequisites}</p>
         </div>
       )}
@@ -101,7 +102,7 @@ export default function EventDetailPage() {
       {/* Cost */}
       <div className="mt-4">
         <span className="text-xl font-bold">
-          {isFree ? "Free" : `${event.currency} ${event.cost.toFixed(2)}`}
+          {isFree ? msg.free : `${event.currency} ${event.cost.toFixed(2)}`}
         </span>
         {event.concessionCost != null && (
           <span className="ml-2 text-sm text-muted-foreground">
@@ -114,16 +115,16 @@ export default function EventDetailPage() {
       <div className="mt-4 p-4 border rounded-lg">
         <div className="flex items-center justify-between">
           <span className="font-semibold">
-            {event.confirmedCount} / {event.capacity} attending
+            {event.confirmedCount} / {event.capacity} {msg.attending}
           </span>
-          {isFull && <span className="text-sm text-danger font-medium">Full</span>}
+          {isFull && <span className="text-sm text-danger font-medium">{msg.badgeFull}</span>}
         </div>
 
         {/* Role breakdown */}
         <div className="flex gap-4 mt-2 text-sm text-muted-foreground">
-          <span>Base: {roleBreakdown.base}</span>
-          <span>Flyer: {roleBreakdown.flyer}</span>
-          <span>Hybrid: {roleBreakdown.hybrid}</span>
+          <span>{msg.roleBase}: {roleBreakdown.base}</span>
+          <span>{msg.roleFlyer}: {roleBreakdown.flyer}</span>
+          <span>{msg.roleHybrid}: {roleBreakdown.hybrid}</span>
         </div>
         {roleBreakdown.hint && (
           <p className="text-sm text-warning font-medium mt-1">{roleBreakdown.hint}</p>
@@ -133,7 +134,7 @@ export default function EventDetailPage() {
       {/* Attendees */}
       {event.attendees.length > 0 && (
         <div className="mt-4">
-          <h2 className="font-semibold mb-2">Attendees</h2>
+          <h2 className="font-semibold mb-2">{msg.attendees}</h2>
           <ul className="text-sm space-y-1">
             {event.attendees.map((a) => (
               <li key={a.userId}>
@@ -151,22 +152,21 @@ export default function EventDetailPage() {
           className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-hover text-sm"
           aria-label="Download calendar invite"
         >
-          Add to Calendar
+          {msg.addToCalendar}
         </a>
         <button
           onClick={() => navigator.clipboard.writeText(window.location.href)}
           className="px-4 py-2 border border-border rounded-md hover:bg-muted text-sm"
           aria-label="Copy event link"
         >
-          Share
+          {msg.share}
         </button>
       </div>
 
       {/* Refund policy */}
       {!isFree && (
         <p className="mt-4 text-xs text-muted-foreground">
-          Cancellation within {event.refundWindowHours}h of event start: credit or refund available.
-          After that: no refund.
+          {msg.refundPolicy(event.refundWindowHours)}
         </p>
       )}
     </div>

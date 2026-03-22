@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
+import { TEACHER_MESSAGES as msg } from "../teacher-messages";
 
 interface Certification {
   id: string;
@@ -74,12 +75,12 @@ export default function TeacherProfilePage() {
     return (
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700">
-          <p className="font-medium">{error ?? "Teacher not found"}</p>
+          <p className="font-medium">{error ?? msg.teacherNotFound}</p>
           <button
             onClick={() => window.location.reload()}
             className="mt-3 text-sm bg-red-100 hover:bg-red-200 text-red-800 px-4 py-2 rounded"
           >
-            Try Again
+            {msg.tryAgain}
           </button>
         </div>
       </div>
@@ -92,7 +93,7 @@ export default function TeacherProfilePage() {
         href="/teachers"
         className="text-indigo-600 hover:text-indigo-800 text-sm font-medium mb-6 inline-block"
       >
-        ← Back to Teachers
+        {msg.backToTeachers}
       </Link>
       <div className="flex justify-between items-start mb-6">
         <div>
@@ -109,12 +110,12 @@ export default function TeacherProfilePage() {
                   : "bg-gray-100 text-gray-800"
             }`}
           >
-            {profile.badge_status === "verified" ? "✓ Verified Teacher" : profile.badge_status}
+            {profile.badge_status === "verified" ? msg.verifiedTeacher : profile.badge_status}
           </span>
           {profile.aggregate_rating != null && (
             <p className="text-lg mt-2">
               ★ {parseFloat(String(profile.aggregate_rating)).toFixed(1)}{" "}
-              <span className="text-sm text-gray-500">({profile.review_count} reviews)</span>
+              <span className="text-sm text-gray-500">({profile.review_count} {msg.reviews})</span>
             </p>
           )}
         </div>
@@ -122,14 +123,14 @@ export default function TeacherProfilePage() {
 
       {profile.bio && (
         <section className="mb-6">
-          <h2 className="font-semibold mb-2">About</h2>
+          <h2 className="font-semibold mb-2">{msg.about}</h2>
           <p className="text-gray-700">{profile.bio}</p>
         </section>
       )}
 
       {profile.specialties.length > 0 && (
         <section className="mb-6">
-          <h2 className="font-semibold mb-2">Specialties</h2>
+          <h2 className="font-semibold mb-2">{msg.specialties}</h2>
           <div className="flex flex-wrap gap-2">
             {profile.specialties.map((s) => (
               <span key={s} className="bg-blue-100 text-blue-800 px-3 py-1 rounded text-sm">
@@ -142,7 +143,7 @@ export default function TeacherProfilePage() {
 
       {profile.certifications.length > 0 && (
         <section className="mb-6">
-          <h2 className="font-semibold mb-2">Certifications</h2>
+          <h2 className="font-semibold mb-2">{msg.certifications}</h2>
           <div className="space-y-2">
             {profile.certifications.map((c) => (
               <div key={c.id} className="border rounded p-3 flex justify-between">
@@ -175,9 +176,9 @@ export default function TeacherProfilePage() {
       )}
 
       <section>
-        <h2 className="font-semibold mb-2">Reviews</h2>
+        <h2 className="font-semibold mb-2">{msg.reviewsHeading}</h2>
         {reviews.length === 0 ? (
-          <p className="text-gray-500">No reviews yet.</p>
+          <p className="text-gray-500">{msg.noReviews}</p>
         ) : (
           <div className="space-y-3">
             {reviews.map((r) => (

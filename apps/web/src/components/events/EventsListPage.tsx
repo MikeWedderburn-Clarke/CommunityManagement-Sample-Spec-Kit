@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import EventCard from "@/components/events/EventCard";
 import EventFilters from "@/components/events/EventFilters";
 import type { EventSummary } from "@acroyoga/shared/types/events";
+import { EVENT_MESSAGES as msg } from "./event-messages";
 
 export default function EventsListPage() {
   const searchParams = useSearchParams();
@@ -34,7 +35,7 @@ export default function EventsListPage() {
 
   return (
     <div className="max-w-5xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-6">Events</h1>
+      <h1 className="text-3xl font-bold mb-6">{msg.eventsTitle}</h1>
 
       <EventFilters />
 
@@ -53,21 +54,21 @@ export default function EventsListPage() {
             onClick={() => window.location.reload()}
             className="ml-2 underline"
           >
-            Retry
+            {msg.retry}
           </button>
         </div>
       )}
 
       {!loading && !error && (
         <>
-          <p className="mt-4 text-sm text-muted-foreground">{total} events found</p>
+          <p className="mt-4 text-sm text-muted-foreground">{msg.eventsFound(total)}</p>
           <div className="mt-4 space-y-3">
             {events.map((event) => (
               <EventCard key={event.id} event={event} />
             ))}
           </div>
           {events.length === 0 && (
-            <p className="mt-8 text-center text-muted-foreground">No events match your filters.</p>
+            <p className="mt-8 text-center text-muted-foreground">{msg.noEventsMatch}</p>
           )}
         </>
       )}

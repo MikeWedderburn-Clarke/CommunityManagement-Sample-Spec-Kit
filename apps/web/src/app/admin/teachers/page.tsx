@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { ADMIN_MESSAGES as msg } from "../admin-messages";
 
 interface TeacherRequest {
   id: string;
@@ -51,15 +52,15 @@ export default function AdminTeachersPage() {
     }
   }
 
-  if (loading) return <div className="p-6">Loading...</div>;
+  if (loading) return <div className="p-6">{msg.loading}</div>;
   if (error) return <div className="p-6 text-red-600">{error}</div>;
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Teacher Applications</h1>
+      <h1 className="text-2xl font-bold mb-4">{msg.teacherApplications}</h1>
 
       {requests.length === 0 ? (
-        <p className="text-gray-500">No pending applications.</p>
+        <p className="text-gray-500">{msg.noPendingApplications}</p>
       ) : (
         <div className="space-y-4">
           {requests.map((r) => (
@@ -90,7 +91,7 @@ export default function AdminTeachersPage() {
 
               {r.credentials.length > 0 && (
                 <div className="mb-3">
-                  <h3 className="text-sm font-medium mb-1">Credentials:</h3>
+                  <h3 className="text-sm font-medium mb-1">{msg.credentialsLabel}</h3>
                   {r.credentials.map((c, i) => (
                     <div key={i} className="text-sm text-gray-600 ml-2">
                       • {c.certificationName} ({c.issuingBody})
@@ -105,13 +106,13 @@ export default function AdminTeachersPage() {
                   onClick={() => handleReview(r.id, "approved")}
                   className="bg-green-600 text-white px-4 py-1.5 rounded text-sm"
                 >
-                  Approve
+                  {msg.approve}
                 </button>
                 <button
                   onClick={() => handleReview(r.id, "rejected")}
                   className="bg-red-600 text-white px-4 py-1.5 rounded text-sm"
                 >
-                  Reject
+                  {msg.reject}
                 </button>
               </div>
             </div>

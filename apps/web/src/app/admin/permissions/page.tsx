@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { PermissionGrant } from "@acroyoga/shared/types/permissions";
+import { ADMIN_MESSAGES as msg } from "../admin-messages";
 
 export default function AdminPermissionsPage() {
   const [grants, setGrants] = useState<PermissionGrant[]>([]);
@@ -62,13 +63,13 @@ export default function AdminPermissionsPage() {
       <div role="alert" className="rounded-md bg-red-50 p-4">
         <div className="flex">
           <div className="ml-3">
-            <h3 className="text-sm font-medium text-red-800">Error loading permissions</h3>
+            <h3 className="text-sm font-medium text-red-800">{msg.errorLoadingPermissions}</h3>
             <p className="mt-2 text-sm text-red-700">{error}</p>
             <button
               onClick={() => window.location.reload()}
               className="mt-3 text-sm font-medium text-red-600 hover:text-red-500"
             >
-              Try again
+              {msg.tryAgain}
             </button>
           </div>
         </div>
@@ -78,20 +79,20 @@ export default function AdminPermissionsPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-6">Permission Grants</h1>
+      <h1 className="text-2xl font-bold mb-6">{msg.permissionGrants}</h1>
 
       {grants.length === 0 ? (
-        <p className="text-gray-500">No active permission grants.</p>
+        <p className="text-gray-500">{msg.noActiveGrants}</p>
       ) : (
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200" role="table" aria-label="Permission grants">
             <thead className="bg-gray-50">
               <tr>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">User ID</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Role</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Scope</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Granted</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{msg.tableUser}</th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{msg.tableRole}</th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{msg.tableScope}</th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{msg.tableGranted}</th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{msg.tableActions}</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
@@ -116,7 +117,7 @@ export default function AdminPermissionsPage() {
                       className="text-red-600 hover:text-red-900 font-medium"
                       aria-label={`Revoke ${grant.role} permission for ${grant.scopeValue || 'global'}`}
                     >
-                      Revoke
+                      {msg.revoke}
                     </button>
                   </td>
                 </tr>

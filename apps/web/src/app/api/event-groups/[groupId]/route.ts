@@ -7,7 +7,7 @@ import {
   getGroupMembers,
 } from "@/lib/event-groups/service";
 import { updateEventGroupSchema } from "@/lib/validation/recurring-schemas";
-import { unauthorized } from "@/lib/errors";
+import { forbidden, unauthorized } from "@/lib/errors";
 
 export async function GET(
   _request: NextRequest,
@@ -37,7 +37,7 @@ export async function PATCH(
     return NextResponse.json({ error: "Event group not found" }, { status: 404 });
   }
   if (existing.created_by !== userId) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    return forbidden();
   }
 
   const body = await request.json();
@@ -64,7 +64,7 @@ export async function DELETE(
     return NextResponse.json({ error: "Event group not found" }, { status: 404 });
   }
   if (existing.created_by !== userId) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    return forbidden();
   }
 
   await deleteEventGroup(groupId);

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { ADMIN_MESSAGES as msg } from "./admin-messages";
 
 interface DashboardCounts {
   pendingTeachers: number;
@@ -11,19 +12,19 @@ interface DashboardCounts {
 const adminSections = [
   {
     href: "/admin/teachers",
-    title: "Teacher Requests",
+    title: msg.teacherRequests,
     countKey: "pendingTeachers" as const,
     description: "Review pending teacher applications.",
   },
   {
     href: "/admin/concessions",
-    title: "Concessions",
+    title: msg.concessions,
     countKey: "pendingConcessions" as const,
     description: "Review pending concession applications.",
   },
   {
     href: "/admin/permissions",
-    title: "Permissions",
+    title: msg.permissions,
     countKey: null,
     description: "Manage user roles and permissions.",
   },
@@ -59,8 +60,8 @@ export default function AdminDashboardPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">Admin Dashboard</h1>
-      <p className="text-gray-600 mb-6">Overview of pending actions and platform management.</p>
+      <h1 className="text-2xl font-bold text-gray-900 mb-2">{msg.dashboardTitle}</h1>
+      <p className="text-gray-600 mb-6">{msg.dashboardSubtitle}</p>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {adminSections.map((section) => (
@@ -73,7 +74,7 @@ export default function AdminDashboardPage() {
               <h2 className="font-semibold text-gray-900">{section.title}</h2>
               {section.countKey && !loading && (
                 <span className="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
-                  {counts[section.countKey]} pending
+                  {counts[section.countKey]} {msg.pending}
                 </span>
               )}
               {section.countKey && loading && (

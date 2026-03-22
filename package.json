@@ -23,6 +23,9 @@
     "db:seed:geography": "npm run db:seed:geography -w @acroyoga/web",
     "db:seed:admin": "npm run db:seed:admin -w @acroyoga/web"
   },
+  "engines": {
+    "node": ">=22.0.0"
+  },
   "devDependencies": {
     "concurrently": "^9.2.1",
     "prettier": "^3.8.1",

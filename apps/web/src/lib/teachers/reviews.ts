@@ -236,14 +236,18 @@ export async function processReviewReminders(): Promise<number> {
          )`,
     );
 
-    for (const reminder of pendingReminders.rows) {
+    if (pendingReminders.rows.length > 0) {
+      const eventIds = pendingReminders.rows.map((r) => r.event_id);
+      const userIds = pendingReminders.rows.map((r) => r.user_id);
+      const days = pendingReminders.rows.map(() => day);
+
       await db().query(
         `INSERT INTO review_reminders (event_id, user_id, reminder_day)
-         VALUES ($1, $2, $3)
+         SELECT * FROM unnest($1::uuid[], $2::uuid[], $3::int[])
          ON CONFLICT DO NOTHING`,
-        [reminder.event_id, reminder.user_id, day],
+        [eventIds, userIds, days],
       );
-      sent++;
+      sent += pendingReminders.rows.length;
     }
   }
 

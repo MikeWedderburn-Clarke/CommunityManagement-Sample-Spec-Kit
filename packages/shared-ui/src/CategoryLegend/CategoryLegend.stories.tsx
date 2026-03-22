@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { CategoryLegend } from "./index.web.js";
 import type { CategoryColorConfig } from "@acroyoga/shared/types/explorer";
+import type { EventCategory } from "@acroyoga/shared/types/events";
 
 const categories: CategoryColorConfig[] = [
   { category: "jam", tokenName: "--color-category-jam", labelKey: "category.jam" },
@@ -30,5 +31,6 @@ export const SomeActive: Story = {
 };
 
 export const NoneActive: Story = {
-  args: { categories, enabledCategories: ["nonexistent" as any], onToggle: () => {} },
+  // Intentionally pass an unrecognized category to test the "none match" edge case
+  args: { categories, enabledCategories: ["nonexistent" as unknown as EventCategory], onToggle: () => {} },
 };
