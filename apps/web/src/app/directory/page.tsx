@@ -34,9 +34,20 @@ const SOCIAL_ICONS: Record<string, string> = {
 
 function MemberCard({
   entry,
+  onFollow,
+  onUnfollow,
+  onBlock,
+  onUnblock,
 }: {
   entry: DirectoryEntry;
+  onFollow?: (userId: string) => void;
+  onUnfollow?: (userId: string) => void;
+  onBlock?: (userId: string) => void;
+  onUnblock?: (userId: string) => void;
 }) {
+  const isFollowing = entry.relationshipStatus === "following" || entry.relationshipStatus === "friend";
+  const isBlocked = entry.relationshipStatus === "blocked";
+
   return (
     <article
       className="bg-white rounded-lg border border-gray-200 p-4 flex flex-col gap-3 hover:shadow-md transition-shadow"
@@ -109,6 +120,44 @@ function MemberCard({
         </ul>
       )}
 
+      <div className="flex gap-2 mt-auto pt-1 border-t border-gray-100">
+        {isBlocked ? (
+          <button
+            onClick={() => onUnblock?.(entry.userId)}
+            className="text-xs text-red-600 hover:text-red-800 hover:underline"
+            aria-label={`${msg.unblock} ${entry.displayName ?? "member"}`}
+          >
+            {msg.unblock}
+          </button>
+        ) : (
+          <>
+            {isFollowing ? (
+              <button
+                onClick={() => onUnfollow?.(entry.userId)}
+                className="text-xs text-gray-500 hover:text-gray-700 hover:underline"
+                aria-label={`${msg.unfollow} ${entry.displayName ?? "member"}`}
+              >
+                {msg.unfollow}
+              </button>
+            ) : (
+              <button
+                onClick={() => onFollow?.(entry.userId)}
+                className="text-xs text-indigo-600 hover:text-indigo-800 hover:underline"
+                aria-label={`${msg.follow} ${entry.displayName ?? "member"}`}
+              >
+                {msg.follow}
+              </button>
+            )}
+            <button
+              onClick={() => onBlock?.(entry.userId)}
+              className="text-xs text-gray-400 hover:text-red-600 hover:underline ml-auto"
+              aria-label={`${msg.block} ${entry.displayName ?? "member"}`}
+            >
+              {msg.block}
+            </button>
+          </>
+        )}
+      </div>
 
     </article>
   );
@@ -220,8 +269,76 @@ export default function DirectoryPage() {
     void fetchDirectory();
   }, [fetchDirectory]);
 
+  const handleFollow = useCallback(async (targetUserId: string) => {
+    // Optimistic update
+    setEntries((prev) =>
+      prev.map((e) =>
+        e.userId === targetUserId
+          ? { ...e, relationshipStatus: e.relationshipStatus === "follows_me" ? "friend" : "following" }
+          : e,
+      ),
+    );
+    try {
+      await fetch("/api/follows", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ followeeId: targetUserId }),
+      });
+    } catch {
+      void fetchDirectory();
+    }
+  }, [fetchDirectory]);
+
+  const handleUnfollow = useCallback(async (targetUserId: string) => {
+    setEntries((prev) =>
+      prev.map((e) =>
+        e.userId === targetUserId
+          ? { ...e, relationshipStatus: e.relationshipStatus === "friend" ? "follows_me" : "none" }
+          : e,
+      ),
+    );
+    try {
+      await fetch(`/api/follows/${targetUserId}`, { method: "DELETE" });
+    } catch {
+      void fetchDirectory();
+    }
+  }, [fetchDirectory]);
+
+  const handleBlock = useCallback(async (targetUserId: string) => {
+    if (!confirm(msg.blockConfirm)) return;
+    // Optimistic: remove from list
+    setEntries((prev) => prev.filter((e) => e.userId !== targetUserId));
+    try {
+      await fetch("/api/blocks", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ blockedId: targetUserId }),
+      });
+    } catch {
+      void fetchDirectory();
+    }
+  }, [fetchDirectory]);
+
+  const handleUnblock = useCallback(async (targetUserId: string) => {
+    setEntries((prev) => prev.filter((e) => e.userId !== targetUserId));
+    try {
+      await fetch(`/api/blocks/${targetUserId}`, { method: "DELETE" });
+    } catch {
+      void fetchDirectory();
+    }
+  }, [fetchDirectory]);
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <a
+        href="#directory-results"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:bg-white focus:px-4 focus:py-2 focus:rounded focus:shadow-lg focus:text-indigo-600 focus:font-medium"
+      >
+        Skip to directory results
+      </a>
+      <div className="sr-only" role="status" aria-live="polite">
+        {!loading && !error && `${entries.length} members shown`}
+      </div>
       <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">{msg.pageTitle}</h1>
@@ -373,11 +490,15 @@ export default function DirectoryPage() {
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div id="directory-results" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" role="region" aria-label="Directory results">
             {entries.map((entry) => (
               <MemberCard
                 key={entry.userId}
                 entry={entry}
+                onFollow={(id) => void handleFollow(id)}
+                onUnfollow={(id) => void handleUnfollow(id)}
+                onBlock={(id) => void handleBlock(id)}
+                onUnblock={(id) => void handleUnblock(id)}
               />
             ))}
           </div>

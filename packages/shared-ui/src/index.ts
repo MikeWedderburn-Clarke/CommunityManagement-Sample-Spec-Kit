@@ -49,6 +49,9 @@ export type { DirectoryCardProps, DirectoryCardData } from "./DirectoryCard/Dire
 export { SocialIcons } from "./SocialIcons/index.web";
 export type { SocialIconsProps } from "./SocialIcons/SocialIcons";
 
+export { ProfileCompleteness } from "./ProfileCompleteness/index.web";
+export type { ProfileCompletenessProps } from "./ProfileCompleteness/ProfileCompleteness";
+
 // Feedback / states
 export { OfflineBanner } from "./OfflineBanner/index.web";
 export type { OfflineBannerProps } from "./OfflineBanner/OfflineBanner";

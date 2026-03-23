@@ -6,6 +6,7 @@ import {
   setDirectoryVisibility,
   getDirectoryVisibility,
 } from "@/lib/directory/service";
+import { getProfile, upsertProfile } from "@/lib/profiles/service";
 import fs from "fs";
 import path from "path";
 
@@ -465,6 +466,62 @@ describe("Directory Service", () => {
         const result = await searchDirectory(userAId, {});
         const ids = result.entries.map((e) => e.userId);
         expect(ids).toContain(userBId);
+      });
+    });
+
+    describe("T027: full visibility cycle", () => {
+      it("user defaults hidden, appears after opt-in, disappears after opt-out", async () => {
+        // Dave has not opted in — not in directory
+        const before = await searchDirectory(userAId, {});
+        expect(before.entries.map((e) => e.userId)).not.toContain(userDId);
+
+        // Dave opts in
+        await setDirectoryVisibility(userDId, true);
+        const visible = await searchDirectory(userAId, {});
+        expect(visible.entries.map((e) => e.userId)).toContain(userDId);
+
+        // Dave opts out
+        await setDirectoryVisibility(userDId, false);
+        const hidden = await searchDirectory(userAId, {});
+        expect(hidden.entries.map((e) => e.userId)).not.toContain(userDId);
+      });
+    });
+
+    describe("T028a: direct profile access when directory_visible=false", () => {
+      it("getProfile returns data even for directory-hidden users", async () => {
+        // Dave never opted in (directory_visible=false)
+        const profile = await getProfile(userDId, userAId);
+        expect(profile).not.toBeNull();
+        expect(profile!.userId).toBe(userDId);
+      });
+
+      it("getProfile returns data after user explicitly opts out", async () => {
+        await setDirectoryVisibility(userBId, false);
+        const profile = await getProfile(userBId, userAId);
+        expect(profile).not.toBeNull();
+        expect(profile!.userId).toBe(userBId);
+      });
+    });
+
+    describe("T028b: directoryVisible via upsertProfile", () => {
+      it("upsertProfile sets directory_visible to true", async () => {
+        await upsertProfile(userDId, { directoryVisible: true });
+        const visible = await getDirectoryVisibility(userDId);
+        expect(visible).toBe(true);
+      });
+
+      it("upsertProfile sets directory_visible to false", async () => {
+        await setDirectoryVisibility(userDId, true);
+        await upsertProfile(userDId, { directoryVisible: false });
+        const visible = await getDirectoryVisibility(userDId);
+        expect(visible).toBe(false);
+      });
+
+      it("upsertProfile updates other fields without affecting directory_visible", async () => {
+        await setDirectoryVisibility(userDId, true);
+        await upsertProfile(userDId, { displayName: "Dave Updated" });
+        const visible = await getDirectoryVisibility(userDId);
+        expect(visible).toBe(true);
       });
     });
   });

@@ -21,4 +21,9 @@ export const DIRECTORY_MESSAGES = {
   filterContinent: "Filter by continent",
   teachersOnly: "Verified teachers only",
   clearAll: "Clear all filters",
+  follow: "Follow",
+  unfollow: "Unfollow",
+  block: "Block",
+  unblock: "Unblock",
+  blockConfirm: "Block this user? This will remove any follow relationship.",
 } as const;

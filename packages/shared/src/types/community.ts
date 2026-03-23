@@ -55,6 +55,7 @@ export interface UpdateProfileRequest {
   homeCityId?: string;
   defaultRole?: DefaultRole;
   avatarUrl?: string;
+  directoryVisible?: boolean;
 }
 
 export interface UpdateProfileResponse {
