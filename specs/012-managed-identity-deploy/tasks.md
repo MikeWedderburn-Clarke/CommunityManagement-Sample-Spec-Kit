@@ -97,8 +97,8 @@ _(Implementation complete in Phase 2, T003–T005. This phase exists as a refere
 ### Implementation for User Story 4
 
 - [X] T008 [US4] Prepare ACR build context: create temp directory at `$env:TEMP\acr-build-ctx2`, remove it if it exists, then `Copy-Item -Path . -Destination $ctx -Recurse -Exclude @('.git','node_modules','.next','storybook-static')` to stage the build context (Windows path workaround per R-003)
-- [ ] T009 [US4] Run ACR remote build: `az acr build --registry acracroyogai6t2epo2hhajo --image acroyoga-web:latest --file Dockerfile $ctx` — per FR-005 and Container Image Contract
-- [ ] T010 [US4] Verify the image exists in the registry: `az acr repository show-tags --name acracroyogai6t2epo2hhajo --repository acroyoga-web -o table` — confirm `latest` tag is present with a recent timestamp
+- [X] T009 [US4] Run ACR remote build: `az acr build --registry acracroyogai6t2epo2hhajo --image acroyoga-web:latest --file Dockerfile $ctx` — per FR-005 and Container Image Contract
+- [X] T010 [US4] Verify the image exists in the registry: `az acr repository show-tags --name acracroyogai6t2epo2hhajo --repository acroyoga-web -o table` — confirm `latest` tag is present with a recent timestamp
 
 **Checkpoint**: US4 complete — container image rebuilt with `@azure/identity` in registry
 

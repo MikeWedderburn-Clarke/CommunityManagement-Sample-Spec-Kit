@@ -159,6 +159,7 @@ module containerApps 'modules/container-apps.bicep' = {
     imageTag: imageTag
     managedIdentityId: identity.outputs.resourceId
     managedIdentityClientId: identity.outputs.clientId
+    managedIdentityName: identity.outputs.name
     keyVaultName: keyVault.outputs.vaultName
     appInsightsConnectionString: monitoring.outputs.appInsightsConnectionString
     logAnalyticsWorkspaceId: monitoring.outputs.logAnalyticsWorkspaceId

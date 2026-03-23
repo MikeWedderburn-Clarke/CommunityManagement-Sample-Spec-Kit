@@ -38,7 +38,7 @@ export function getDb(): DbClient {
         host: pgHost,
         port: 5432,
         database: process.env.PGDATABASE || "acroyoga",
-        user: azureClientId,
+        user: process.env.PGUSER || azureClientId,
         password: getEntraPassword,
         ssl: { rejectUnauthorized: true },
         max: 10,

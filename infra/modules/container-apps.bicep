@@ -16,6 +16,9 @@ param managedIdentityId string
 @description('User-assigned managed identity client ID')
 param managedIdentityClientId string
 
+@description('User-assigned managed identity name (for PostgreSQL Entra auth user)')
+param managedIdentityName string
+
 @description('Key Vault name for secret references')
 param keyVaultName string
 
@@ -162,6 +165,7 @@ resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
             { name: 'AZURE_STORAGE_ACCOUNT_URL', value: storageBlobEndpoint }
             { name: 'PGHOST', value: pgHost }
             { name: 'PGDATABASE', value: pgDatabase }
+            { name: 'PGUSER', value: managedIdentityName }
           ]
           probes: [
             {
@@ -171,6 +175,7 @@ resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
                 port: 3000
               }
               periodSeconds: 10
+              timeoutSeconds: 5
               failureThreshold: 3
             }
             {
@@ -180,7 +185,8 @@ resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
                 port: 3000
               }
               periodSeconds: 5
-              failureThreshold: 3
+              timeoutSeconds: 10
+              failureThreshold: 10
             }
             {
               type: 'Startup'
@@ -189,6 +195,7 @@ resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
                 port: 3000
               }
               periodSeconds: 5
+              timeoutSeconds: 5
               failureThreshold: 30
             }
           ]
