@@ -13,7 +13,7 @@ RUN npm ci --force
 # Copy source and build
 COPY . .
 RUN npm run tokens:build -w @acroyoga/tokens
-RUN npm run build -w @acroyoga/web
+RUN NEXT_PRIVATE_LOCAL_WEBPACK=1 npm run build -w @acroyoga/web
 
 # Stage 2: Production runner
 FROM node:22-alpine AS runner
