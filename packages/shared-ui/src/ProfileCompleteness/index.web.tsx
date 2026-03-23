@@ -1,6 +1,6 @@
 import React from "react";
-import type { WebProfileCompletenessProps } from "./ProfileCompleteness.js";
-import { DEFAULT_FIELD_LABELS } from "./ProfileCompleteness.js";
+import type { WebProfileCompletenessProps } from "./ProfileCompleteness";
+import { DEFAULT_FIELD_LABELS } from "./ProfileCompleteness";
 
 export function ProfileCompleteness({
   completeness,

@@ -28,10 +28,6 @@ const analyze = withBundleAnalyzer({
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    // Turbopack doesn't resolve .js → .tsx in monorepo exports maps
-    turbo: false,
-  },
   transpilePackages: [
     "@acroyoga/shared",
     "@acroyoga/shared-ui",

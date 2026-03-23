@@ -1,6 +1,6 @@
 import React from "react";
-import type { WebSocialIconsProps } from "./SocialIcons.js";
-import { PLATFORM_ICONS } from "./icons.js";
+import type { WebSocialIconsProps } from "./SocialIcons";
+import { PLATFORM_ICONS } from "./icons";
 
 const LABELS: Record<string, string> = {
   instagram: "IG",
