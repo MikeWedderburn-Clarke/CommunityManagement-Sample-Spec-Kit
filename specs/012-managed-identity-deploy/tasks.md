@@ -40,9 +40,9 @@
 
 **⚠️ CRITICAL**: No deployment work can begin until changes are pushed and (optionally) CI passes
 
-- [ ] T003 [US3] Stage all changes with `git add -A` and commit with message `feat(012): devcontainer, constitution sync, managed identity migration`
-- [ ] T004 [US3] Push to remote: `git push origin` to `https://github.com/MikeWedderburn-Clarke/CommunityManagement-Sample-Spec-Kit.git` — per FR-004
-- [ ] T005 [US3] Verify the pushed commit contains all expected modified files: Bicep modules (`infra/modules/*.bicep`, `infra/main.bicep`), app code (`apps/web/src/db/client.ts`, `apps/web/src/lib/blob-storage.ts`, `apps/web/src/app/api/ready/route.ts`, `apps/web/package.json`), devcontainer (`.devcontainer/devcontainer.json`), constitution (`.specify/memory/constitution.md`, `specs/constitution.md`), and README
+- [X] T003 [US3] Stage all changes with `git add -A` and commit with message `feat(012): devcontainer, constitution sync, managed identity migration`
+- [X] T004 [US3] Push to remote: `git push origin` to `https://github.com/MikeWedderburn-Clarke/CommunityManagement-Sample-Spec-Kit.git` — per FR-004
+- [X] T005 [US3] Verify the pushed commit contains all expected modified files: Bicep modules (`infra/modules/*.bicep`, `infra/main.bicep`), app code (`apps/web/src/db/client.ts`, `apps/web/src/lib/blob-storage.ts`, `apps/web/src/app/api/ready/route.ts`, `apps/web/package.json`), devcontainer (`.devcontainer/devcontainer.json`), constitution (`.specify/memory/constitution.md`, `specs/constitution.md`), and README
 
 **Checkpoint**: Remote main branch reflects all Managed Identity migration changes
 
@@ -56,7 +56,7 @@
 
 _(Implementation complete in Phase 1, T001. This phase exists for independent verification.)_
 
-- [ ] T006 [US1] Validate the devcontainer by confirming `.devcontainer/devcontainer.json` references the correct base image, features, post-create command, forwarded ports, and extensions — cross-reference with contracts/infrastructure.md Devcontainer Contract
+- [X] T006 [US1] Validate the devcontainer by confirming `.devcontainer/devcontainer.json` references the correct base image, features, post-create command, forwarded ports, and extensions — cross-reference with contracts/infrastructure.md Devcontainer Contract
 
 **Checkpoint**: US1 complete — devcontainer configuration is correct and pushed
 
@@ -70,7 +70,7 @@ _(Implementation complete in Phase 1, T001. This phase exists for independent ve
 
 _(Implementation complete in Phase 1, T002. This phase exists for independent verification.)_
 
-- [ ] T007 [US2] Run `diff specs/constitution.md .specify/memory/constitution.md` and confirm zero differences and both files contain `v1.5.0` version identifier
+- [X] T007 [US2] Run `diff specs/constitution.md .specify/memory/constitution.md` and confirm zero differences and both files contain `v1.5.0` version identifier
 
 **Checkpoint**: US2 complete — governance documents are synchronized
 
@@ -96,7 +96,7 @@ _(Implementation complete in Phase 2, T003–T005. This phase exists as a refere
 
 ### Implementation for User Story 4
 
-- [ ] T008 [US4] Prepare ACR build context: create temp directory at `$env:TEMP\acr-build-ctx2`, remove it if it exists, then `Copy-Item -Path . -Destination $ctx -Recurse -Exclude @('.git','node_modules','.next','storybook-static')` to stage the build context (Windows path workaround per R-003)
+- [X] T008 [US4] Prepare ACR build context: create temp directory at `$env:TEMP\acr-build-ctx2`, remove it if it exists, then `Copy-Item -Path . -Destination $ctx -Recurse -Exclude @('.git','node_modules','.next','storybook-static')` to stage the build context (Windows path workaround per R-003)
 - [ ] T009 [US4] Run ACR remote build: `az acr build --registry acracroyogai6t2epo2hhajo --image acroyoga-web:latest --file Dockerfile $ctx` — per FR-005 and Container Image Contract
 - [ ] T010 [US4] Verify the image exists in the registry: `az acr repository show-tags --name acracroyogai6t2epo2hhajo --repository acroyoga-web -o table` — confirm `latest` tag is present with a recent timestamp
 
