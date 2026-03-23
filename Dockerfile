@@ -1,5 +1,5 @@
 # Stage 1: Build
-FROM node:22-alpine AS builder
+FROM acracroyogai6t2epo2hhajo.azurecr.io/node:22-alpine AS builder
 WORKDIR /app
 
 # Install dependencies (package.jsons first for layer caching)
@@ -16,7 +16,7 @@ RUN npm run tokens:build -w @acroyoga/tokens
 RUN npm run build -w @acroyoga/web
 
 # Stage 2: Production runner
-FROM node:22-alpine AS runner
+FROM acracroyogai6t2epo2hhajo.azurecr.io/node:22-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
