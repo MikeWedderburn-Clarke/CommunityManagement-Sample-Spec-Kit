@@ -112,12 +112,12 @@ _(Implementation complete in Phase 2, T003–T005. This phase exists as a refere
 
 ### Implementation for User Story 5
 
-- [ ] T011 [US5] List active container app revisions: `az containerapp revision list -n ca-acroyoga-web-staging -g rg-acroyoga-stg -o table` and deactivate all old/non-latest revisions via `az containerapp revision deactivate -n ca-acroyoga-web-staging -g rg-acroyoga-stg --revision <revision-name>` to prevent `ContainerAppSecretInUse` error (R-007)
-- [ ] T012 [US5] Deploy Bicep infrastructure: `az deployment group create --resource-group rg-acroyoga-stg --template-file infra/main.bicep --parameters infra/main.parameters.json --parameters imageTag=latest environmentName=staging location=uksouth` — per FR-006/FR-007/FR-008 and Bicep Deployment Contract
-- [ ] T013 [US5] If T012 fails with `ContainerAppSecretInUse`: re-list revisions, deactivate any remaining old revisions still referencing removed secrets, then retry the deployment command from T012 — per Error Recovery Contract
-- [ ] T014 [P] [US5] Verify database Entra admin: `az postgres flexible-server ad-admin list --resource-group rg-acroyoga-stg --server-name <server-name> -o table` — confirm managed identity is registered as administrator (FR-006)
-- [ ] T015 [P] [US5] Verify container app environment variables: `az containerapp show -n ca-acroyoga-web-staging -g rg-acroyoga-stg --query "properties.template.containers[0].env" -o table` — confirm `AZURE_CLIENT_ID`, `AZURE_STORAGE_ACCOUNT_URL`, `PGHOST`, `PGDATABASE` are present (FR-007)
-- [ ] T016 [P] [US5] Verify Key Vault secrets: `az keyvault secret list --vault-name <vault-name> -o table` — confirm `storage-connection-string` is NOT present while `database-url`, `nextauth-secret`, and other required secrets remain (FR-008)
+- [X] T011 [US5] List active container app revisions: `az containerapp revision list -n ca-acroyoga-web-staging -g rg-acroyoga-stg -o table` and deactivate all old/non-latest revisions via `az containerapp revision deactivate -n ca-acroyoga-web-staging -g rg-acroyoga-stg --revision <revision-name>` to prevent `ContainerAppSecretInUse` error (R-007)
+- [X] T012 [US5] Deploy Bicep infrastructure: `az deployment group create --resource-group rg-acroyoga-stg --template-file infra/main.bicep --parameters infra/main.parameters.json --parameters imageTag=latest environmentName=staging location=uksouth` — per FR-006/FR-007/FR-008 and Bicep Deployment Contract
+- [X] T013 [US5] If T012 fails with `ContainerAppSecretInUse`: re-list revisions, deactivate any remaining old revisions still referencing removed secrets, then retry the deployment command from T012 — per Error Recovery Contract
+- [X] T014 [P] [US5] Verify database Entra admin: `az postgres flexible-server ad-admin list --resource-group rg-acroyoga-stg --server-name <server-name> -o table` — confirm managed identity is registered as administrator (FR-006)
+- [X] T015 [P] [US5] Verify container app environment variables: `az containerapp show -n ca-acroyoga-web-staging -g rg-acroyoga-stg --query "properties.template.containers[0].env" -o table` — confirm `AZURE_CLIENT_ID`, `AZURE_STORAGE_ACCOUNT_URL`, `PGHOST`, `PGDATABASE` are present (FR-007)
+- [X] T016 [P] [US5] Verify Key Vault secrets: `az keyvault secret list --vault-name <vault-name> -o table` — confirm `storage-connection-string` is NOT present while `database-url`, `nextauth-secret`, and other required secrets remain (FR-008)
 
 **Checkpoint**: US5 complete — infrastructure fully reflects Managed Identity configuration
 
@@ -131,10 +131,10 @@ _(Implementation complete in Phase 2, T003–T005. This phase exists as a refere
 
 ### Implementation for User Story 6
 
-- [ ] T017 [US6] Health check — Container App: `curl -s -o /dev/null -w "%{http_code}" https://ca-acroyoga-web-staging.salmontree-d5cceffd.uksouth.azurecontainerapps.io/api/health` — must return 200 (FR-010)
-- [ ] T018 [US6] Readiness check — Container App: `curl -s -o /dev/null -w "%{http_code}" https://ca-acroyoga-web-staging.salmontree-d5cceffd.uksouth.azurecontainerapps.io/api/ready` — must return 200, confirming MI auth to DB + Storage (FR-011). If 200 for health but non-200 for ready: check role assignments, env vars, database Entra admin config
-- [ ] T019 [US6] Front Door health check: `curl -s -o /dev/null -w "%{http_code}" https://acro-i6t2epo2hhajo-gcdgg7b8cgdndebz.b01.azurefd.net/api/health` — must return 200, confirming CDN routing (FR-012)
-- [ ] T020 [US6] If any endpoint returns non-200: wait 60s and retry once. If still failing, check container app logs via `az containerapp logs show -n ca-acroyoga-web-staging -g rg-acroyoga-stg --type console` — per Error Recovery Contract
+- [X] T017 [US6] Health check — Container App: `curl -s -o /dev/null -w "%{http_code}" https://ca-acroyoga-web-staging.salmontree-d5cceffd.uksouth.azurecontainerapps.io/api/health` — must return 200 (FR-010)
+- [X] T018 [US6] Readiness check — Container App: `curl -s -o /dev/null -w "%{http_code}" https://ca-acroyoga-web-staging.salmontree-d5cceffd.uksouth.azurecontainerapps.io/api/ready` — must return 200, confirming MI auth to DB + Storage (FR-011). If 200 for health but non-200 for ready: check role assignments, env vars, database Entra admin config
+- [X] T019 [US6] Front Door health check: `curl -s -o /dev/null -w "%{http_code}" https://acro-i6t2epo2hhajo-gcdgg7b8cgdndebz.b01.azurefd.net/api/health` — must return 200, confirming CDN routing (FR-012)
+- [X] T020 [US6] If any endpoint returns non-200: wait 60s and retry once. If still failing, check container app logs via `az containerapp logs show -n ca-acroyoga-web-staging -g rg-acroyoga-stg --type console` — per Error Recovery Contract
 
 **Checkpoint**: US6 complete — all endpoints healthy, deployment verified end-to-end
 
@@ -144,8 +144,8 @@ _(Implementation complete in Phase 2, T003–T005. This phase exists as a refere
 
 **Purpose**: Final documentation and cleanup
 
-- [ ] T021 [P] Clean up ACR build context temp directory: `Remove-Item $env:TEMP\acr-build-ctx2 -Recurse -Force`
-- [ ] T022 Run quickstart.md validation — confirm all steps in `specs/012-managed-identity-deploy/quickstart.md` correspond to completed tasks
+- [X] T021 [P] Clean up ACR build context temp directory: `Remove-Item $env:TEMP\acr-build-ctx2 -Recurse -Force`
+- [X] T022 Run quickstart.md validation — confirm all steps in `specs/012-managed-identity-deploy/quickstart.md` correspond to completed tasks
 
 ---
 
